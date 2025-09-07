@@ -16,12 +16,22 @@
   .casilla {
     @apply bg-gray-500 grid place-content-center 
     rounded-lg text-white border-2 border-gray-600 
-    h-[20vh] text-xl;
+    text-xl;
+  }
+
+  .horizontal {
+    @apply h-[10vh];
+  }
+  .verical {
+    @apply w-[20vw];
+  }
+  .casilla-esquina {
+    @apply h-[20vh];
   }
 
   .casilla-propiedad {
-    @apply bg-cyan-500 grid place-content-center 
-    rounded-lg text-white border-2 border-cyan-600 
+    @apply bg-yellow-500 grid place-content-center 
+    rounded-lg text-white border-2 border-yellow-600 
     text-xl;
   }
 
