@@ -176,12 +176,33 @@
   .col-\[2\/5\] {
     grid-column: 2/5;
   }
+
+
+  .col-span-8 {
+    grid-column: span 8 / span 8;
+  }
   .col-span-2 {
     grid-column: span 2 / span 2;
   }
   .col-span-4 {
     grid-column: span 4 / span 4;
   }
+  .col-span-3 {
+    grid-column: span 3 / span 3;
+  }
+  /*columnas de 5 para las esquinas*/
+  .col-span-5 {
+    grid-column: span 5 / span 5;
+  }
+  /*columnas de 36 para el relleno centro del tablero*/
+  .col-span-36 {
+    grid-column: span 36 / span 36;
+  }
+  /*para 46 columnas*/
+  .col-span-46 {
+    grid-column: span 46 / span 46;
+  }
+
   .col-start-2 {
     grid-column-start: 2;
   }
@@ -190,6 +211,12 @@
   }
   .row-\[3\/5\] {
     grid-row: 3/5;
+  }
+  .row-span-12 {
+    grid-row: span 12 / span 12;
+  }
+  .row-span-8 {
+    grid-row: span 8 / span 8;
   }
   .row-span-2 {
     grid-row: span 2 / span 2;
@@ -200,6 +227,19 @@
   .row-span-4 {
     grid-row: span 4 / span 4;
   }
+  /*5 filas para las esquinas*/
+  .row-span-5 {
+    grid-row: span 5 / span 5;
+  }
+  /*36 filas para el relleno del centro del tablero*/
+  .row-span-36 {
+    grid-row: span 36 / span 36;
+  }
+  /*pasra 46 filas*/
+  .row-span-46 {
+    grid-row: span 46 / span 46;
+  }
+
   .grid {
     display: grid;
   }
@@ -233,6 +273,11 @@
   .grid-cols-15 {
     grid-template-columns: repeat(15, minmax(0, 1fr));
   }
+  /*toda la pantalla en 56*/
+  .grid-cols-48{
+    grid-template-columns: repeat(48, minmax(0, 1fr));
+  }
+
   .gap-1 {
     gap: calc(var(--spacing) * 1);
   }
