@@ -1,12 +1,39 @@
 @import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @layer components {
-  .casilla {
-    @apply bg-red-500 grid place-content-center rounded-lg text-white border-2 border-red-600 text-1xl;
+
+  .fondo{
+    @apply bg-green-200 text-green-900;
   }
 
+  .tablero{
+    @apply bg-teal-500 grid place-content-center 
+    rounded-lg text-white border-2 border-teal-600
+     text-xl;
+
+  }
+
+  .casilla {
+    @apply bg-gray-500 grid place-content-center 
+    rounded-lg text-white border-2 border-gray-600 
+    h-[20vh] text-xl;
+  }
+
+  .casilla-propiedad {
+    @apply bg-cyan-500 grid place-content-center 
+    rounded-lg text-white border-2 border-cyan-600 
+    text-xl;
+  }
+
+  .casilla-puesto {
+    @apply bg-violet-500 grid place-content-center 
+    rounded-lg text-white border-2 border-violet-600 
+    text-xl;
+  }
+
+  .centro{
+    @apply bg-emerald-500 grid place-content-center 
+    rounded-lg text-white border-2 border-emerald-600 
+    text-3xl;
+  }
 }
