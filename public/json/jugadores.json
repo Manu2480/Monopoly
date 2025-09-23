@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1758583272028,
+    "nombre": "Manuela",
+    "pais": "Colombia",
+    "ficha": "✈️",
+    "color": "botonblue",
+    "dinero": 1500,
+    "propiedades": [],
+    "turno": true
+  },
+  {
+    "id": 1758587196177,
+    "nombre": "Juan",
+    "pais": "España",
+    "ficha": "🐘",
+    "color": "botonyellow",
+    "dinero": 1500,
+    "propiedades": [
+      {
+        "id": 1,
+        "nombre": "Avenida Mediterráneo",
+        "casas": [],
+        "hoteles": [],
+        "hipotecada": false
+      }
+    ],
+    "turno": false
+  }
+]
