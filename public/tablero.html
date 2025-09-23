@@ -6,22 +6,33 @@
   <link rel="stylesheet" href="styles/tablero.css">
 </head>
 <body>
-  <h1 style="text-align: center;">Monopoly Web</h1>
-
-  <div class="tablero" id="tablero"></div>
-
-  <div class="controles">
-    <button onclick="lanzarDados()">🎲 Lanzar dados</button>
-    <button onclick="terminarTurno()">⏭️ Terminar turno</button>
+  <!-- Turno actual -->
+  <div id="turno-actual" class="turno-banner">
+    Turno de: <span id="jugador-turno">Jugador 1</span>
   </div>
 
-  <div class="lista-jugadores">
-    <h2>Jugadores</h2>
-    <ul id="jugadoresLista"></ul>
-  </div>
-
-  <div id="registro">
-    <div>Registro de juego</div>
+  <!-- Tablero principal -->
+  <div class="tablero" id="tablero">
+    <!-- Aquí JS colocará las 40 casillas en los bordes -->
+    <!-- El centro queda como contenedor 9x9 -->
+    <div class="centro">
+      <div class="contenedor-cartas">
+        <h3>Cartas Suerte</h3>
+        <div id="mazo-suerte" class="mazo"></div>
+      </div>
+      <div class="contenedor-dados">
+        <h3>Dados</h3>
+        <div class="dados">
+          <div id="dado1" class="dado">⚀</div>
+          <div id="dado2" class="dado">⚀</div>
+        </div>
+        <button onclick="tirarDados()">🎲 Tirar dados</button>
+      </div>
+      <div class="contenedor-cartas">
+        <h3>Cartas Comunidad</h3>
+        <div id="mazo-comunidad" class="mazo"></div>
+      </div>
+    </div>
   </div>
 
   <script src="scripts/tablero.js"></script>

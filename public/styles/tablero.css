@@ -1,278 +1,92 @@
-/* Estilos del tablero Monopoly - Versión integrada con API */
-
-.tablero {
-  aspect-ratio: 1/1;
-  max-width: 900px;
-  margin: 0 auto;
-  border-radius: 12px;
-  overflow: hidden;
-  background: linear-gradient(180deg, #f8fafc, #eef2ff);
-  box-shadow: 0 8px 30px rgba(16, 24, 40, 0.12);
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.casilla {
-  border: 1px solid rgba(15, 23, 42, 0.06);
+.turno-banner {
+  background: #222;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+}
+
+.tablero {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  grid-template-rows: repeat(11, 1fr);
+  width: 900px;
+  height: 900px;
+  border: 4px solid black;
+  background: white;
+  margin-top: 10px;
+  position: relative;
+}
+
+/* Centro del tablero (9x9 interior) */
+.centro {
+  grid-column: 2 / 11;
+  grid-row: 2 / 11;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+  gap: 10px;
+  justify-items: center;
+  align-items: center;
+}
+
+.contenedor-cartas, .contenedor-dados {
+  border: 2px solid black;
+  padding: 10px;
+  width: 80%;
+  height: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
-  user-select: none;
-  position: relative;
-  padding: 4px;
-  min-height: 60px;
-  background: white;
-}
-
-.casilla.esquina {
-  font-weight: 700;
-  font-size: 0.8rem;
-  min-height: 80px;
-}
-
-.casilla.especial {
-  font-weight: bold;
-  text-align: center;
-}
-
-.casilla.propiedad {
-  border-top-width: 8px;
-  border-top-style: solid;
-}
-
-.casilla.ferrocarril {
-  font-weight: bold;
-}
-
-.casilla.impuesto {
-  font-weight: bold;
-  text-align: center;
-}
-
-.casilla.carta {
-  font-weight: bold;
-  text-align: center;
-}
-
-.casilla-nombre {
-  text-align: center;
-  line-height: 1.1;
-  font-size: 0.65rem;
-  font-weight: 500;
-}
-
-.precio {
-  font-size: 0.6rem;
-  font-weight: bold;
-  margin-top: 2px;
-  color: #374151;
-}
-
-.impuesto-valor {
-  font-size: 0.6rem;
-  font-weight: bold;
-  margin-top: 2px;
-}
-
-.ficha {
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  transition: transform 400ms ease, opacity 300ms;
-  font-size: 14px;
-  box-shadow: 0 2px 6px rgba(2, 6, 23, 0.18);
-  z-index: 10;
-  border: 2px solid white;
-}
-
-.ficha-mini {
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  box-shadow: 0 1px 3px rgba(2, 6, 23, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-}
-
-.nombre-ficha {
-  position: absolute;
-  top: 34px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  white-space: nowrap;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 1px 4px;
-  border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(2, 6, 23, 0.08);
-  z-index: 9;
-  max-width: 80px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.controles {
-  max-width: 900px;
-  margin: 18px auto;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
 }
 
 .dados {
-  width: 48px;
-  height: 48px;
+  display: flex;
+  gap: 15px;
+  margin: 10px 0;
+}
+
+.dado {
+  font-size: 40px;
+  border: 2px solid black;
+  border-radius: 8px;
+  padding: 15px;
+  background: #fff;
+}
+
+.casilla {
+  border: 1px solid black;
+  background: #fafafa;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 10px;
+  text-align: center;
+  padding: 2px;
 }
 
-.lista-jugadores {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.lista-jugadores ul {
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.lista-jugadores li {
-  transition: background-color 200ms ease;
-}
-
-.lista-jugadores li:hover {
-  background-color: #f1f5f9 !important;
-}
-
-/* Estilos específicos para tipos de casilla */
-.casilla[data-posicion-monopoly="0"] {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
+.esquina {
+  width: 80px;
+  height: 80px;
+  background: #fff8dc;
+  font-size: 12px;
   font-weight: bold;
-}
-
-.casilla[data-posicion-monopoly="10"] {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: white;
-  font-weight: bold;
-}
-
-.casilla[data-posicion-monopoly="20"] {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: white;
-  font-weight: bold;
-}
-
-.casilla[data-posicion-monopoly="30"] {
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
-  color: white;
-  font-weight: bold;
-}
-
-/* Animaciones para las fichas */
-@keyframes mover-ficha {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-}
-
-.ficha.moviendo {
-  animation: mover-ficha 0.5s ease-in-out;
-}
-
-/* Estilos para el registro de actividades */
-#registro {
-  max-height: 200px;
-  overflow-y: auto;
-  background: white;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-#registro div {
-  padding: 4px 0;
-  border-bottom: 1px solid #f1f5f9;
-  font-size: 0.85rem;
-  color: #475569;
-}
-
-#registro div:last-child {
-  border-bottom: none;
-}
-
-#registro div:first-child {
-  font-weight: 600;
-  color: #1e293b;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .tablero {
-    max-width: 100%;
-    margin: 0 auto;
-  }
-  
-  .casilla {
-    font-size: 0.6rem;
-    padding: 2px;
-    min-height: 45px;
-  }
-  
-  .casilla-nombre {
-    font-size: 0.55rem;
-  }
-  
-  .precio, .impuesto-valor {
-    font-size: 0.5rem;
-  }
-  
-  .ficha {
-    width: 20px;
-    height: 20px;
-    font-size: 12px;
-  }
-  
-  .nombre-ficha {
-    font-size: 8px;
-    top: 24px;
-  }
-  
-  .controles {
-    flex-direction: column;
-    gap: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .casilla {
-    font-size: 0.5rem;
-    min-height: 35px;
-  }
-  
-  .casilla-nombre {
-    font-size: 0.45rem;
-  }
-  
-  .ficha {
-    width: 16px;
-    height: 16px;
-    font-size: 10px;
-  }
-  
-  .nombre-ficha {
-    display: none; /* Ocultar nombres en pantallas muy pequeñas */
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border: 2px solid black;
 }
