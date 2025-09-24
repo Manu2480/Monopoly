@@ -1,43 +1,64 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Monopoly Web</title>
-  <link rel="stylesheet" href="styles/tablero.css">
-</head>
-<body>
-  <div id="turno-actual" class="turno-banner">
-    Turno de: <span id="jugador-turno">Cargando...</span>
-  </div>
 
-  <div class="parent">
-    <!-- Centro: 3 columnas -->
-    <div class="div1">
-      <div class="contenedor-cartas">
-        <h3>Cartas Suerte</h3>
-        <div id="mazo-suerte" class="mazo">❓</div>
-        <button onclick="voltearCarta('suerte')">Voltear carta</button>
-      </div>
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎲 Monopoly Web - Edición Premium</title>
+  <link rel="stylesheet" href="styles/tablero.css">
+
+</head>
+
+<body>
+  <div class="game-container">
+    <div id="turno-actual" class="turno-banner">
+      🎮 Turno de: <span id="jugador-turno">Manuela</span>
     </div>
-    <div class="div2">
+
+    <div class="info-posicion">
+      Mostrando casillas <span id="rango-casillas">1-11</span> | 
+      Jugador en casilla: <span id="posicion-actual">0</span>
+    </div>
+
+    <div id="tablero-linear" class="tablero-linear">
+      <!-- Las casillas se generan dinámicamente aquí -->
+    </div>
+
+    <div class="controles-centro">
+      <div class="contenedor-cartas">
+        <h3>🃏 Cartas Suerte</h3>
+        <div id="mazo-suerte" class="mazo">❓</div>
+        <button onclick="voltearCarta('suerte')">✨ Voltear carta</button>
+      </div>
+      
       <div class="contenedor-dados">
-        <h3>Dados</h3>
+        <h3>🎲 Centro de Juego</h3>
         <div class="dados">
           <div id="dado1" class="dado">⚀</div>
           <div id="dado2" class="dado">⚀</div>
         </div>
-        <button onclick="tirarDados()">🎲 Tirar dados</button>
+        <button onclick="tirarDados()">🎯 Tirar dados</button>
+      </div>
+      
+      <div class="contenedor-cartas">
+        <h3>🏛️ Cartas Comunidad</h3>
+        <div id="mazo-comunidad" class="mazo">🎁</div>
+        <button onclick="voltearCarta('comunidad')">🎁 Voltear carta</button>
       </div>
     </div>
-    <div class="div3">
-      <div class="contenedor-cartas">
-        <h3>Cartas Comunidad</h3>
-        <div id="mazo-comunidad" class="mazo">🎁</div>
-        <button onclick="voltearCarta('comunidad')">Voltear carta</button>
-      </div>
+
+    <div class="controles-navegacion">
+      <button class="btn-navegacion" onclick="cambiarTurno()">
+        ↻ Siguiente Turno
+      </button>
+      <button class="btn-navegacion" onclick="cambiarTurno()">
+        👀 ver juego
+      </button>
     </div>
   </div>
 
   <script src="scripts/tablero.js"></script>
+
 </body>
 </html>

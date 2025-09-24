@@ -1,82 +1,278 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Luckiest+Guy&family=Roboto:wght@300;400;700&family=Montserrat:wght@400;600&display=swap');
+
+/* 🎨 Paleta Monopoly */
+:root {
+  --rojo: #E63946;
+  --verde: #06D6A0;
+  --azul: #118AB2;
+  --amarillo: #FFD166;
+  --gris: #F1FAEE;
+  --negro: #1D1D1D;
+}
+
+/* Reset */
+* {
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  box-sizing: border-box;
 }
 
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(180deg, #F7FBF8 0%, #EDF7F2 100%);
+  min-height: 100vh;
+  padding: 20px;
+  color: var(--negro);
+}
+
+.game-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Banner turno */
 .turno-banner {
-  background: #222;
+  background: linear-gradient(90deg, var(--rojo), var(--azul));
   color: white;
-  font-size: 20px;
-  font-weight: bold;
-  padding: 10px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 24px;
+  padding: 15px 30px;
   text-align: center;
-  width: 100%;
+  border-radius: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+}
+.turno-banner:hover { transform: translateY(-3px); }
+
+#jugador-turno {
+  color: var(--amarillo);
+  font-family: 'Luckiest Guy', cursive;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 
-/* Tablero principal con grid 11x11 */
-.parent {
-  display: grid;
-  grid-template-columns: repeat(11, 1fr);
-  grid-template-rows: repeat(11, 1fr);
-  width: 900px;
-  height: 900px;
-  border: 4px solid black;
+/* Info */
+.info-posicion {
+  text-align: center;
+  background: rgba(255,255,255,0.9);
+  padding: 10px 20px;
+  border-radius: 15px;
+  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--negro);
+}
+
+/* Tablero lineal */
+.tablero-linear {
   background: white;
-  margin-top: 10px;
+  border: 6px solid var(--azul);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  display: grid;
+  gap: 12px;
 }
 
-/* Centro con 3 columnas */
-.div1 { grid-area: 4 / 3 / 9 / 5; }
-.div2 { grid-area: 4 / 5 / 9 / 8; }
-.div3 { grid-area: 4 / 8 / 9 / 10; }
+/* Responsive grid */
+@media (min-width: 1200px) {
+  .tablero-linear { grid-template-columns: repeat(11, 1fr); }
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+  .tablero-linear { grid-template-columns: repeat(7, 1fr); }
+}
+@media (max-width: 767px) {
+  .tablero-linear { grid-template-columns: repeat(4, 1fr); }
+}
 
-/* Estilos comunes */
-.contenedor-cartas, .contenedor-dados {
-  border: 2px solid black;
+/* Casillas */
+.casilla {
+  border: 3px solid var(--negro);
+  background: white;
+  border-radius: 12px;
   padding: 10px;
-  width: 100%;
-  height: 100%;
+  min-height: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--negro);
+  position: relative;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.casilla:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+.casilla .font-bold {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  margin-bottom: 6px;
 }
 
+/* Propiedades */
+ .casilla.propiedad {
+  border-top: 20px solid var(--prop-color, var(--negro));
+  color: var(--negro); /* Texto siempre negro */
+}
+
+/* Colores Monopoly */
+.casilla.propiedad[data-color="brown"]  { --prop-color: #8b4513; }
+.casilla.propiedad[data-color="purple"] { --prop-color: #8a2be2; }
+.casilla.propiedad[data-color="pink"]   { --prop-color: #ff69b4; }
+.casilla.propiedad[data-color="orange"] { --prop-color: #ffa500; }
+.casilla.propiedad[data-color="red"]    { --prop-color: #dc143c; }
+.casilla.propiedad[data-color="yellow"] { --prop-color: #ffd700; }
+.casilla.propiedad[data-color="green"]  { --prop-color: #228b22; }
+.casilla.propiedad[data-color="blue"]   { --prop-color: #0066cc; }
+
+
+/* Cartas */
+.casilla.carta {
+  border-top: 20px solid var(--negro);
+  font-weight: bold;
+}
+.casilla.carta-sorpresa { border-top-color: #8a2be2; }
+.casilla.carta-comunidad { border-top-color: var(--amarillo); }
+
+/* Ferrocarril */
+.casilla.ferrocarril {
+  background: var(--gris);
+  border: 3px solid var(--azul);
+  font-weight: bold;
+}
+
+/* Impuesto */
+.casilla.impuesto {
+  background: var(--gris);
+  border: 3px solid var(--rojo);
+  font-weight: bold;
+}
+
+/* Especiales */
+.casilla.esquina {
+  background: var(--gris);
+  border: 3px solid var(--verde);
+  font-weight: bold;
+}
+
+/* Jugadores */
+.jugador {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: white;
+  border: 2px solid white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+.jugador.ring-2 {
+  box-shadow: 0 0 0 4px rgba(255,209,102,0.3), 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Controles */
+.controles-centro {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin: 20px 0;
+}
+.contenedor-cartas,
+.contenedor-dados {
+  border: 3px solid var(--azul);
+  border-radius: 15px;
+  padding: 20px;
+  background: var(--gris);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+.contenedor-cartas h3,
+.contenedor-dados h3 {
+  font-family: 'Fredoka One', cursive;
+  color: var(--negro);
+  font-size: 16px;
+}
+
+/* Mazos */
 .mazo {
-  width: 100px;
-  height: 140px;
-  border: 2px solid black;
-  border-radius: 8px;
+  width: 120px;
+  height: 160px;
+  border: 3px solid var(--negro);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 40px;
   background: white;
-  margin-bottom: 10px;
-  transition: transform 0.6s;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.mazo:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.15);
 }
 
-.mazo.carta-volteada {
-  font-size: 14px;
-  padding: 10px;
-  text-align: center;
-}
-
-.dados {
-  display: flex;
-  gap: 15px;
-  margin: 10px 0;
-}
-
+/* Dados */
+.dados { display: flex; gap: 15px; }
 .dado {
-  font-size: 40px;
-  border: 2px solid black;
-  border-radius: 8px;
-  padding: 15px;
-  background: #fff;
+  font-size: 34px;
+  border: 3px solid var(--negro);
+  border-radius: 12px;
+  padding: 18px;
+  background: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  min-width: 70px;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Botones */
+button {
+  font-family: 'Fredoka One', cursive;
+  background: linear-gradient(90deg, var(--rojo), var(--azul));
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+button:hover { transform: translateY(-3px); }
+
+.controles-navegacion {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.btn-navegacion {
+  background: linear-gradient(90deg, var(--azul), var(--verde));
+  min-width: 130px;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .controles-centro { grid-template-columns: 1fr; }
+  .turno-banner { font-size: 18px; padding: 12px 18px; }
+  .casilla { min-height: 100px; }
+  .jugador { width: 22px; height: 22px; font-size: 12px; }
 }
