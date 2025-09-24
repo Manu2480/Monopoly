@@ -58,6 +58,41 @@ button,
   transition: background 0.4s ease, color 0.3s ease;
 }
 
+/*CAMBIO DE LOS ESTILOS DE LOS JUGADORES EN LA BARRA*/
+.jugador-barra {
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  padding: 4px 10px;
+  border-radius: 10px;
+
+  /* Borde negro alrededor del texto */
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
+
+.jugador-barra.activo {
+  font-size: 22px;
+  font-weight: bold;
+  color: inherit; /* usa su color original */
+  animation: brillo 1s infinite alternate;
+}
+
+.jugador-barra.inactivo {
+  color: #888 !important;
+  filter: grayscale(1);
+}
+
+@keyframes brillo {
+  from { text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 5px rgba(255,255,255,0.4); }
+  to   { text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 20px rgba(255,255,255,0.9); }
+}
+
+
+
 
 #jugador-turno {
   color: var(--amarillo);

@@ -8,6 +8,7 @@ let tableroData = {
 let jugadores = [];
 let casillasVisibles = 11;
 let indiceTurno = 0;
+let juegoIniciado = false;
 
 // ======================== FUNCIONES AUXILIARES ========================
 function determinarCasillasVisibles() {
@@ -169,9 +170,8 @@ async function cargarJugadores() {
     if (!res.ok) throw new Error("No se pudo cargar json/jugadores.json");
 
     jugadores = await res.json();
-    indiceTurno = jugadores.findIndex(j => j.turno) || 0;
+    indiceTurno = 0; // por defecto primer jugador
 
-    aplicarEstiloJugador(jugadores[indiceTurno]); // 🆕 aplicar color al inicio
   } catch (error) {
     console.error("Error cargando jugadores:", error);
   }
@@ -346,29 +346,16 @@ function cambiarTurno() {
   indiceTurno = (indiceTurno + 1) % jugadores.length;
   jugadores[indiceTurno].turno = true;
 
-  aplicarEstiloJugador(jugadores[indiceTurno]); // 🆕 actualizar estilos
+  aplicarEstiloJugador(jugadores[indiceTurno]);
 
   resetearCartas();
   renderizarTablero();
+  renderizarBarraJugadores();
 }
 
 // ======================= ESTILOS POR JUGADOR =======================
-// 🆕
 function aplicarEstiloJugador(jugador) {
   const banner = document.getElementById("turno-actual");
-  const spanNombre = document.getElementById("jugador-turno");
-
-  // Cambiar color de fondo de la barra
-  banner.style.background = jugador.color;
-
-  // Mostrar ficha + nombre
-  spanNombre.textContent = `${jugador.ficha || "🎮"} ${jugador.nombre}`;
-
-  // Cambiar botones principales
-  const botones = document.querySelectorAll("button, .btn-navegacion");
-  botones.forEach(btn => {
-    btn.style.background = jugador.color;
-  });
 }
 
 function resetearCartas() {
@@ -394,6 +381,71 @@ function moverJugador(idJugador, pasos) {
     renderizarTablero();
 }
 
+// ======================== BARRA DE JUGADORES ========================
+function renderizarBarraJugadores() {
+  const barra = document.getElementById("lista-jugadores");
+  if (!barra) return;
+
+  barra.innerHTML = "";
+
+  jugadores.forEach((j, idx) => {
+    const span = document.createElement("span");
+    span.textContent = `${j.ficha || ""} ${j.nombre}`;
+    span.classList.add("jugador-barra");
+    span.style.color = j.color;
+
+    if (j.turno) {
+      span.classList.add("activo");
+    } else if (juegoIniciado) {
+      span.classList.add("inactivo");
+    }
+
+    barra.appendChild(span);
+  });
+}
+
+// ======================== INICIAR / FINALIZAR JUEGO ========================
+function toggleJuego() {
+  const btn = document.getElementById("btn-inicio");
+  const banner = document.getElementById("turno-actual");
+
+  if (!juegoIniciado) {
+    // Iniciar
+    indiceTurno = 0;
+    jugadores.forEach(j => j.turno = false);
+    jugadores[indiceTurno].turno = true;
+    aplicarEstiloJugador(jugadores[indiceTurno]);
+    renderizarTablero();
+
+    btn.textContent = "⏹️ Finalizar Juego";
+    juegoIniciado = true;
+  } else {
+    // Finalizar
+    jugadores.forEach(j => j.turno = false);
+    banner.style.background = "linear-gradient(90deg, var(--rojo), var(--azul))";
+
+    const botones = document.querySelectorAll("button, .btn-navegacion");
+    botones.forEach(btn => {
+      btn.style.background = "linear-gradient(90deg, var(--rojo), var(--azul))";
+    });
+
+    btn.textContent = "▶️ Iniciar Juego";
+    juegoIniciado = false;
+    renderizarTablero();
+  }
+
+  renderizarBarraJugadores();
+}
+
+function verPerfil() {
+  const jugador = jugadores[indiceTurno];
+  if (!jugador) {
+    alert("No hay jugador en turno.");
+    return;
+  }
+  alert(`👤 ${jugador.nombre}\n💰 Dinero: ${jugador.dinero}\n📍 Casilla: ${jugador.posicionActual}`);
+}
+
 // ======================== INIT ========================
 window.onload = async () => {
     const originalBodyHTML = document.body.innerHTML;
@@ -404,6 +456,7 @@ window.onload = async () => {
             document.body.innerHTML = originalBodyHTML;
             casillasVisibles = determinarCasillasVisibles();
             renderizarTablero();
+            renderizarBarraJugadores();
             window.addEventListener('resize', ajustarResponsive);
         }, 1000);
     } catch (err) {

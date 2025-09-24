@@ -13,8 +13,10 @@
 <body>
   <div class="game-container">
     <div id="turno-actual" class="turno-banner">
-      🎮 Turno de: <span id="jugador-turno">Manuela</span>
-    </div>
+    🎮 Jugadores:
+    <div id="lista-jugadores" class="jugadores-barra"></div>
+  </div>
+
 
     <div class="info-posicion">
       Mostrando casillas <span id="rango-casillas">1-11</span> | 
@@ -55,13 +57,17 @@
     </div>
 
     <div class="controles-navegacion">
+      <button id="btn-inicio" class="btn-navegacion" onclick="toggleJuego()">
+        ▶️ Iniciar Juego
+      </button>
       <button class="btn-navegacion" onclick="cambiarTurno()">
         ↻ Siguiente Turno
       </button>
-      <button class="btn-navegacion" onclick="cambiarTurno()">
-        👀 ver juego
+      <button class="btn-navegacion" onclick="verPerfil()">
+        👀 Ver Perfil
       </button>
     </div>
+
   </div>
 
   <script src="scripts/tablero.js"></script>
