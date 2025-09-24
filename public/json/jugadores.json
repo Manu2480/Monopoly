@@ -6,6 +6,7 @@
     "ficha": "✈️",
     "color": "blue",
     "dinero": 1500,
+    "deudaBanco": 0,
     "propiedades": [],
     "posicionActual": 0,
     "turno": false
@@ -17,6 +18,7 @@
     "ficha": "🚗",
     "color": "red",
     "dinero": 1500,
+    "deudaBanco": 0,
     "propiedades": [],
     "posicionActual": 0,
     "turno": false
@@ -28,6 +30,7 @@
     "ficha": "🚤",
     "color": "green",
     "dinero": 1500,
+    "deudaBanco": 0,
     "propiedades": [],
     "posicionActual": 0,
     "turno": false
@@ -39,6 +42,7 @@
     "ficha": "🚤",
     "color": "yellow",
     "dinero": 1500,
+    "deudaBanco": 0,
     "propiedades": [],
     "posicionActual": 0,
     "turno": false
