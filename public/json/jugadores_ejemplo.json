@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1758583272031,
+    "nombre": "Alejo",
+    "pais": "Colombia",
+    "ficha": "🚤",
+    "color": "yellow",
+    "dinero": 1500,
+    "deudaBanco": 0,
+    "propiedades": [],
+    "posicionActual": 0,
+    "turno": false
+  }
+]
