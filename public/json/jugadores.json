@@ -10,21 +10,13 @@
     "turno": true
   },
   {
-    "id": 1758587196177,
+    "id": 1758583272029,
     "nombre": "Juan",
-    "pais": "España",
-    "ficha": "🐘",
-    "color": "botonyellow",
+    "pais": "México",
+    "ficha": "🚗",
+    "color": "red",
     "dinero": 1500,
-    "propiedades": [
-      {
-        "id": 1,
-        "nombre": "Avenida Mediterráneo",
-        "casas": [],
-        "hoteles": [],
-        "hipotecada": false
-      }
-    ],
+    "propiedades": [],
     "turno": false
   }
 ]

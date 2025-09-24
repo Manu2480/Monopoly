@@ -18,7 +18,8 @@ body {
   width: 100%;
 }
 
-.tablero {
+/* Tablero principal con grid 11x11 */
+.parent {
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: repeat(11, 1fr);
@@ -27,30 +28,43 @@ body {
   border: 4px solid black;
   background: white;
   margin-top: 10px;
-  position: relative;
 }
 
-/* Centro del tablero (9x9 interior) */
-.centro {
-  grid-column: 2 / 11;
-  grid-row: 2 / 11;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 1fr;
-  gap: 10px;
-  justify-items: center;
-  align-items: center;
-}
+/* Centro con 3 columnas */
+.div1 { grid-area: 4 / 3 / 9 / 5; }
+.div2 { grid-area: 4 / 5 / 9 / 8; }
+.div3 { grid-area: 4 / 8 / 9 / 10; }
 
+/* Estilos comunes */
 .contenedor-cartas, .contenedor-dados {
   border: 2px solid black;
   padding: 10px;
-  width: 80%;
-  height: 80%;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.mazo {
+  width: 100px;
+  height: 140px;
+  border: 2px solid black;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  background: white;
+  margin-bottom: 10px;
+  transition: transform 0.6s;
+}
+
+.mazo.carta-volteada {
+  font-size: 14px;
+  padding: 10px;
+  text-align: center;
 }
 
 .dados {
@@ -65,28 +79,4 @@ body {
   border-radius: 8px;
   padding: 15px;
   background: #fff;
-}
-
-.casilla {
-  border: 1px solid black;
-  background: #fafafa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  text-align: center;
-  padding: 2px;
-}
-
-.esquina {
-  width: 80px;
-  height: 80px;
-  background: #fff8dc;
-  font-size: 12px;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  border: 2px solid black;
 }
