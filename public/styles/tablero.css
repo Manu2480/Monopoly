@@ -116,13 +116,10 @@ body {
   margin-bottom: 6px;
 }
 
-/* Propiedades */
- .casilla.propiedad {
+/* ✅ Propiedades con franja de color */
+.casilla.propiedad {
   border-top: 20px solid var(--prop-color, var(--negro));
-  color: var(--negro); /* Texto siempre negro */
 }
-
-/* Colores Monopoly */
 .casilla.propiedad[data-color="brown"]  { --prop-color: #8b4513; }
 .casilla.propiedad[data-color="purple"] { --prop-color: #8a2be2; }
 .casilla.propiedad[data-color="pink"]   { --prop-color: #ff69b4; }
@@ -132,35 +129,66 @@ body {
 .casilla.propiedad[data-color="green"]  { --prop-color: #228b22; }
 .casilla.propiedad[data-color="blue"]   { --prop-color: #0066cc; }
 
-
-/* Cartas */
-.casilla.carta {
-  border-top: 20px solid var(--negro);
-  font-weight: bold;
-}
-.casilla.carta-sorpresa { border-top-color: #8a2be2; }
-.casilla.carta-comunidad { border-top-color: var(--amarillo); }
-
-/* Ferrocarril */
-.casilla.ferrocarril {
-  background: var(--gris);
-  border: 3px solid var(--azul);
-  font-weight: bold;
-}
-
-/* Impuesto */
-.casilla.impuesto {
-  background: var(--gris);
+/* ✅ Suerte → borde rojo */
+.casilla.carta-sorpresa {
   border: 3px solid var(--rojo);
-  font-weight: bold;
 }
 
-/* Especiales */
-.casilla.esquina {
-  background: var(--gris);
-  border: 3px solid var(--verde);
-  font-weight: bold;
+/* ✅ Comunidad → borde amarillo */
+.casilla.carta-comunidad {
+  border: 3px solid var(--amarillo);
 }
+
+/* ✅ Cárcel */
+.casilla.carcel {
+  border: 3px solid orange;
+}
+
+/* ✅ Salida */
+.casilla.salida {
+  border: 3px solid var(--verde);
+}
+
+/* ✅ Estacionamiento (Parking gratis) */
+.casilla.parking {
+  border: 3px solid var(--azul);
+}
+
+/* ✅ Impuesto */
+.casilla.impuesto {
+  border: 3px solid var(--rojo);
+}
+
+/* ✅ Ferrocarril */
+.casilla.ferrocarril {
+  border: 3px solid var(--azul);
+}
+
+/*---css para que los jugadores no se sobrepongan---*/
+/* Contenedor de jugadores dentro de una casilla */
+.casilla .jugadores-container {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  right: 6px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* hasta 2 columnas */
+  grid-template-rows: repeat(2, 1fr);   /* hasta 2 filas */
+  gap: 4px;
+  justify-items: center;
+  align-items: center;
+}
+
+/* Ajuste tamaño de la ficha para que quepan hasta 4 */
+.casilla .jugadores-container .jugador {
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+  bottom: auto;
+  left: auto;
+  position: static; /* que respete el grid */
+}
+
 
 /* Jugadores */
 .jugador {
@@ -217,16 +245,32 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
+  text-align: center;
   background: white;
   box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease;
   cursor: pointer;
+  padding: 8px;
+  overflow: hidden;
 }
+
+.mazo .icono {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.mazo .texto {
+  font-size: 14px;
+  line-height: 1.2;
+  word-wrap: break-word;
+}
+
 .mazo:hover {
   transform: translateY(-5px);
   box-shadow: 0 14px 28px rgba(0,0,0,0.15);
 }
+
+
 
 /* Dados */
 .dados { display: flex; gap: 15px; }
@@ -269,7 +313,7 @@ button:hover { transform: translateY(-3px); }
   min-width: 130px;
 }
 
-/* Responsive */
+/* Responsive (botones, cartas, jugadores, tamaños)*/
 @media (max-width: 767px) {
   .controles-centro { grid-template-columns: 1fr; }
   .turno-banner { font-size: 18px; padding: 12px 18px; }

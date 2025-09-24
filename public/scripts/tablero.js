@@ -34,20 +34,22 @@ function crearCasilla(casilla) {
     div.setAttribute('data-tipo', tipo);
 
     if (tipo === "property") {
-        div.classList.add('propiedad');
-        if (casilla.color) div.setAttribute('data-color', casilla.color);
-    } else if (tipo === "railroad") {
-        div.classList.add('ferrocarril');
-    } else if (tipo === "tax") {
-        div.classList.add('impuesto');
+      div.classList.add('propiedad');
+      if (casilla.color) div.setAttribute('data-color', casilla.color);
     } else if (tipo === "chance") {
-        div.classList.add('carta', 'carta-sorpresa');
-        casilla.name = casilla.name || "Sorpresa ❓";
+      div.classList.add('carta-sorpresa');
     } else if (tipo === "community_chest") {
-        div.classList.add('carta', 'carta-comunidad');
-        casilla.name = casilla.name || "Comunidad 🎁";
-    } else if (tipo === "special") {
-        div.classList.add('esquina');
+      div.classList.add('carta-comunidad');
+    } else if (casilla.name.toLowerCase().includes("cárcel")) {
+      div.classList.add('carcel');
+    } else if (casilla.name.toLowerCase().includes("salida")) {
+      div.classList.add('salida');
+    } else if (casilla.name.toLowerCase().includes("parking")) {
+      div.classList.add('parking');
+    } else if (tipo === "tax") {
+      div.classList.add('impuesto');
+    } else if (tipo === "railroad") {
+      div.classList.add('ferrocarril');
     }
 
     div.innerHTML = `
@@ -61,13 +63,20 @@ function crearCasilla(casilla) {
     return div;
 }
 
+//se modifico para que un jugador no se superponiera encima de otro
 function agregarJugadorACasilla(casillaElem, jugador, esActual) {
+    // Ver si ya existe contenedor de jugadores en esta casilla
+    let contenedor = casillaElem.querySelector('.jugadores-container');
+    if (!contenedor) {
+        contenedor = document.createElement('div');
+        contenedor.classList.add('jugadores-container');
+        casillaElem.appendChild(contenedor);
+    }
+
     const ficha = document.createElement('div');
     ficha.classList.add('jugador');
 
-    // Map de colores "amigables" a hex (por si en jugadores.json hay nombres personalizados)
     const colorMap = {
-      'botonblue': '#118AB2',
       'red': '#E63946',
       'green': '#06D6A0',
       'yellow': '#FFD166',
@@ -77,12 +86,12 @@ function agregarJugadorACasilla(casillaElem, jugador, esActual) {
 
     ficha.style.backgroundColor = colorMap[jugador.color] || jugador.color || '#1D1D1D';
     ficha.title = jugador.nombre;
-    // mostramos la ficha (emoji) si existe
     if (jugador.ficha) ficha.textContent = jugador.ficha;
 
     if (esActual) ficha.classList.add('ring-2');
 
-    casillaElem.appendChild(ficha);
+    contenedor.appendChild(ficha);
+
 }
 
 
@@ -214,25 +223,35 @@ function voltearCarta(tipo) {
 
   if (!cartas || cartas.length === 0) return;
 
+  // animación de giro
   mazo.style.transform = 'rotateY(90deg)';
   mazo.style.transition = 'transform 0.3s ease';
 
   setTimeout(() => {
     let carta = cartas[Math.floor(Math.random() * cartas.length)];
-    mazo.textContent = carta.description || carta.text || "";
+
+    // mostrar el texto con clase específica
+    mazo.innerHTML = `<div class="texto">${carta.description || carta.text || ""}</div>`;
+
     mazo.classList.add("carta-volteada");
     mazo.style.transform = 'rotateY(0deg)';
 
+    // efecto de brillo
     mazo.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.6)';
-    mazo.style.padding = '10px';
-    mazo.style.fontSize = '14px';
-    mazo.style.textAlign = 'center';
-    mazo.style.wordWrap = 'break-word';
+
+    // restaurar sombra normal
     setTimeout(() => {
       mazo.style.boxShadow = '0 8px 20px rgba(0,0,0,0.15)';
     }, 1000);
+
+    // volver al ícono después de 3 segundos
+    setTimeout(() => {
+      const icono = (tipo === "suerte") ? "❓" : "🎁";
+      mazo.innerHTML = `<div class="icono">${icono}</div>`;
+    }, 3000);
   }, 300);
 }
+
 
 // ======================= DADOS =======================
 function tirarDados() {
@@ -280,6 +299,25 @@ function tirarDados() {
     if (jugadores.length > 0) moverJugador(jugadores[indiceTurno].id, suma);
   }, 1500);
 }
+
+
+// función para hacer pruebas moviendo el jugador x pasos
+function moverManual() {
+  const input = document.getElementById("input-pasos");
+  let pasos = parseInt(input.value);
+
+  if (isNaN(pasos) || pasos <= 0) {
+    alert("Por favor ingresa un número válido de pasos.");
+    return;
+  }
+
+  if (jugadores.length > 0) {
+    moverJugador(jugadores[indiceTurno].id, pasos);
+  }
+
+  input.value = ""; // limpiar campo después
+}
+
 
 function getCara() {
   const caras = ["⚀","⚁","⚂","⚃","⚄","⚅"];

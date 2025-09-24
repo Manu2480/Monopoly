@@ -39,7 +39,13 @@
           <div id="dado2" class="dado">⚀</div>
         </div>
         <button onclick="tirarDados()">🎯 Tirar dados</button>
+
+        <!-- 🆕 Caja de texto para pasos manuales -->
+        <input id="input-pasos" type="number" min="1" max="40" placeholder="Mover pasos"
+              style="width:120px; padding:6px; border-radius:8px; border:2px solid var(--azul); text-align:center; margin-top:10px;">
+        <button onclick="moverManual()">➡️ Mover</button>
       </div>
+
       
       <div class="contenedor-cartas">
         <h3>🏛️ Cartas Comunidad</h3>
