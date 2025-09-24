@@ -1,0 +1,96 @@
+[
+  {
+    "id": 1758583272028,
+    "nombre": "Manuela",
+    "pais": "Colombia",
+    "ficha": "✈️",
+    "color": "blue",
+    "dinero": 980,
+    "propiedades": [
+      {
+        "idPropiedad": 1,
+        "casas": 2,
+        "hotel": 0,
+        "hipotecado": false
+      },
+      {
+        "idPropiedad": 5,
+        "casas": 0,
+        "hotel": 0,
+        "hipotecado": false
+      }
+    ],
+    "posicionActual": 18,
+    "turno": false,
+    "deudaBanco": 120
+  },
+  {
+    "id": 1758583272029,
+    "nombre": "Juan",
+    "pais": "México",
+    "ficha": "🚗",
+    "color": "red",
+    "dinero": 450,
+    "propiedades": [
+      {
+        "idPropiedad": 27,
+        "casas": 0,
+        "hotel": 0,
+        "hipotecado": false
+      },
+      {
+        "idPropiedad": 12,
+        "casas": 0,
+        "hotel": 0,
+        "hipotecado": true
+      }
+    ],
+    "posicionActual": 10,
+    "turno": true,
+    "deudaBanco": 0
+  },
+  {
+    "id": 1758583272030,
+    "nombre": "Jero",
+    "pais": "México",
+    "ficha": "🚤",
+    "color": "green",
+    "dinero": 1620,
+    "propiedades": [
+      {
+        "idPropiedad": 39,
+        "casas": 0,
+        "hotel": 1,
+        "hipotecado": false
+      }
+    ],
+    "posicionActual": 30,
+    "turno": false,
+    "deudaBanco": 0
+  },
+  {
+    "id": 1758583272031,
+    "nombre": "Alejo",
+    "pais": "Colombia",
+    "ficha": "🚤",
+    "color": "yellow",
+    "dinero": 300,
+    "propiedades": [
+      {
+        "idPropiedad": 24,
+        "casas": 1,
+        "hotel": 0,
+        "hipotecado": false
+      },
+      {
+        "idPropiedad": 25,
+        "casas": 0,
+        "hotel": 0,
+        "hipotecado": true
+      }
+    ],
+    "posicionActual": 7,
+    "turno": false,
+    "deudaBanco": 200
+  }
+]

@@ -33,19 +33,31 @@ body {
   gap: 20px;
 }
 
-/* Banner turno */
+
+/* Banner turno */ /*modifique la barra para que sea estatica arriba*/
 .turno-banner {
+  position: sticky;    /* 👈 se mantiene visible al hacer scroll */
+  top: 0;              /* pegada al borde superior */
+  z-index: 1000;       /* que quede por encima del resto */
   background: linear-gradient(90deg, var(--rojo), var(--azul));
   color: white;
   font-family: 'Fredoka One', cursive;
   font-size: 24px;
   padding: 15px 30px;
   text-align: center;
-  border-radius: 25px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  border-radius: 0 0 25px 25px; /* opcional: solo redondeado abajo */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15); /* sombra sutil para separar */
   transition: transform 0.3s ease;
 }
+
 .turno-banner:hover { transform: translateY(-3px); }
+
+.turno-banner,
+button,
+.btn-navegacion {
+  transition: background 0.4s ease, color 0.3s ease;
+}
+
 
 #jugador-turno {
   color: var(--amarillo);
@@ -165,30 +177,27 @@ body {
 }
 
 /*---css para que los jugadores no se sobrepongan---*/
-/* Contenedor de jugadores dentro de una casilla */
 .casilla .jugadores-container {
   position: absolute;
   bottom: 6px;
   left: 6px;
   right: 6px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* hasta 2 columnas */
-  grid-template-rows: repeat(2, 1fr);   /* hasta 2 filas */
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 4px;
   justify-items: center;
   align-items: center;
 }
 
-/* Ajuste tamaño de la ficha para que quepan hasta 4 */
 .casilla .jugadores-container .jugador {
   width: 22px;
   height: 22px;
   font-size: 12px;
   bottom: auto;
   left: auto;
-  position: static; /* que respete el grid */
+  position: static;
 }
-
 
 /* Jugadores */
 .jugador {
@@ -270,8 +279,6 @@ body {
   box-shadow: 0 14px 28px rgba(0,0,0,0.15);
 }
 
-
-
 /* Dados */
 .dados { display: flex; gap: 15px; }
 .dado {
@@ -313,10 +320,118 @@ button:hover { transform: translateY(-3px); }
   min-width: 130px;
 }
 
-/* Responsive (botones, cartas, jugadores, tamaños)*/
+/* 📱 Responsive móvil */
 @media (max-width: 767px) {
-  .controles-centro { grid-template-columns: 1fr; }
-  .turno-banner { font-size: 18px; padding: 12px 18px; }
-  .casilla { min-height: 100px; }
-  .jugador { width: 22px; height: 22px; font-size: 12px; }
+  body {
+    padding: 10px;
+  }
+
+  .game-container {
+    gap: 15px;
+  }
+
+  .controles-centro {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .contenedor-cartas,
+  .contenedor-dados {
+    width: 100%;
+    margin: 0 auto;
+    padding: 15px;
+  }
+
+  .mazo {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+  }
+
+  button {
+    width: 100%;
+    max-width: 250px;
+    margin: 0 auto;
+  }
+
+  .turno-banner {
+    font-size: 18px;
+    padding: 12px 18px;
+  }
+
+  .casilla {
+    min-height: 90px;
+  }
+
+  .info-posicion {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .jugador {
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+  }
 }
+
+/* 💻 Responsive tablet */
+@media (min-width: 768px) and (max-width: 1199px) {
+  body {
+    padding: 15px;
+  }
+
+  .game-container {
+    gap: 18px;
+  }
+
+  .contenedor-cartas,
+  .contenedor-dados {
+    padding: 18px;
+  }
+
+  button {
+    font-size: 13px;
+    padding: 10px 20px;
+  }
+}
+
+/* 🔧 Ajustes extra para móviles angostos */
+@media (max-width: 600px) {
+  .game-container {
+    padding: 0 5px; /* menos padding lateral */
+  }
+
+  .contenedor-cartas,
+  .contenedor-dados {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px;
+  }
+
+  .mazo {
+    width: 100%;
+    max-width: 150px; /* más pequeño que antes */
+    height: auto;
+  }
+
+  .tablero-linear {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .casilla {
+    min-height: 80px; /* que no se fuerce demasiado alta */
+    padding: 6px;
+  }
+
+  button {
+    max-width: 200px; /* botones no muy grandes */
+  }
+
+  input[type="number"] {
+    width: 100%;
+    max-width: 120px;
+  }
+}
+

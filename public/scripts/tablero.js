@@ -12,9 +12,9 @@ let indiceTurno = 0;
 // ======================== FUNCIONES AUXILIARES ========================
 function determinarCasillasVisibles() {
     const width = window.innerWidth;
-    if (width >= 1024) return 11;
-    if (width >= 768) return 7;
-    return 4;
+    if (width >= 1200) return 11;  // escritorio amplio
+    if (width >= 768) return 7;    // tablets / pantallas medianas
+    return 4;                      // móviles
 }
 
 function calcularRangoVisible() {
@@ -63,9 +63,8 @@ function crearCasilla(casilla) {
     return div;
 }
 
-//se modifico para que un jugador no se superponiera encima de otro
+// ================== Fichas en casilla ==================
 function agregarJugadorACasilla(casillaElem, jugador, esActual) {
-    // Ver si ya existe contenedor de jugadores en esta casilla
     let contenedor = casillaElem.querySelector('.jugadores-container');
     if (!contenedor) {
         contenedor = document.createElement('div');
@@ -91,9 +90,7 @@ function agregarJugadorACasilla(casillaElem, jugador, esActual) {
     if (esActual) ficha.classList.add('ring-2');
 
     contenedor.appendChild(ficha);
-
 }
-
 
 // ======================== RENDER ========================
 function renderizarTablero() {
@@ -174,14 +171,7 @@ async function cargarJugadores() {
     jugadores = await res.json();
     indiceTurno = jugadores.findIndex(j => j.turno) || 0;
 
-    const bannerJugador = document.getElementById("jugador-turno");
-    if (bannerJugador) {
-      bannerJugador.style.opacity = '0';
-      setTimeout(() => {
-        bannerJugador.textContent = jugadores[indiceTurno].nombre;
-        bannerJugador.style.opacity = '1';
-      }, 300);
-    }
+    aplicarEstiloJugador(jugadores[indiceTurno]); // 🆕 aplicar color al inicio
   } catch (error) {
     console.error("Error cargando jugadores:", error);
   }
@@ -223,35 +213,27 @@ function voltearCarta(tipo) {
 
   if (!cartas || cartas.length === 0) return;
 
-  // animación de giro
   mazo.style.transform = 'rotateY(90deg)';
   mazo.style.transition = 'transform 0.3s ease';
 
   setTimeout(() => {
     let carta = cartas[Math.floor(Math.random() * cartas.length)];
-
-    // mostrar el texto con clase específica
     mazo.innerHTML = `<div class="texto">${carta.description || carta.text || ""}</div>`;
-
     mazo.classList.add("carta-volteada");
     mazo.style.transform = 'rotateY(0deg)';
 
-    // efecto de brillo
     mazo.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.6)';
 
-    // restaurar sombra normal
     setTimeout(() => {
       mazo.style.boxShadow = '0 8px 20px rgba(0,0,0,0.15)';
     }, 1000);
 
-    // volver al ícono después de 3 segundos
     setTimeout(() => {
       const icono = (tipo === "suerte") ? "❓" : "🎁";
       mazo.innerHTML = `<div class="icono">${icono}</div>`;
     }, 3000);
   }, 300);
 }
-
 
 // ======================= DADOS =======================
 function tirarDados() {
@@ -300,8 +282,7 @@ function tirarDados() {
   }, 1500);
 }
 
-
-// función para hacer pruebas moviendo el jugador x pasos
+// función para mover manualmente
 function moverManual() {
   const input = document.getElementById("input-pasos");
   let pasos = parseInt(input.value);
@@ -315,9 +296,8 @@ function moverManual() {
     moverJugador(jugadores[indiceTurno].id, pasos);
   }
 
-  input.value = ""; // limpiar campo después
+  input.value = "";
 }
-
 
 function getCara() {
   const caras = ["⚀","⚁","⚂","⚃","⚄","⚅"];
@@ -366,18 +346,29 @@ function cambiarTurno() {
   indiceTurno = (indiceTurno + 1) % jugadores.length;
   jugadores[indiceTurno].turno = true;
 
-  const banner = document.getElementById("jugador-turno");
-  banner.style.transform = 'scale(0.9)';
-  banner.style.opacity = '0.7';
-
-  setTimeout(() => {
-    banner.textContent = jugadores[indiceTurno].nombre;
-    banner.style.transform = 'scale(1)';
-    banner.style.opacity = '1';
-  }, 300);
+  aplicarEstiloJugador(jugadores[indiceTurno]); // 🆕 actualizar estilos
 
   resetearCartas();
-  renderizarTablero(); // actualizar inmediatamente la línea de casillas
+  renderizarTablero();
+}
+
+// ======================= ESTILOS POR JUGADOR =======================
+// 🆕
+function aplicarEstiloJugador(jugador) {
+  const banner = document.getElementById("turno-actual");
+  const spanNombre = document.getElementById("jugador-turno");
+
+  // Cambiar color de fondo de la barra
+  banner.style.background = jugador.color;
+
+  // Mostrar ficha + nombre
+  spanNombre.textContent = `${jugador.ficha || "🎮"} ${jugador.nombre}`;
+
+  // Cambiar botones principales
+  const botones = document.querySelectorAll("button, .btn-navegacion");
+  botones.forEach(btn => {
+    btn.style.background = jugador.color;
+  });
 }
 
 function resetearCartas() {
