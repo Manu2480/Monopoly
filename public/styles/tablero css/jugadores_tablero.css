@@ -1,0 +1,47 @@
+/* Estilos de los jugadores en la barra */
+.jugador-barra {
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  padding: 4px 10px;
+  border-radius: 10px;
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
+.jugador-barra.activo {
+  font-size: 22px;
+  font-weight: bold;
+  color: inherit;
+  animation: brillo 1s infinite alternate;
+}
+.jugador-barra.inactivo {
+  color: #888 !important;
+  filter: grayscale(1);
+}
+@keyframes brillo {
+  from { text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 5px rgba(255,255,255,0.4); }
+  to   { text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 20px rgba(255,255,255,0.9); }
+}
+
+/* Jugadores en casillas */
+.jugador {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: white;
+  border: 2px solid white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+.jugador.ring-2 {
+  box-shadow: 0 0 0 4px rgba(255,209,102,0.3), 0 4px 12px rgba(0,0,0,0.2);
+}

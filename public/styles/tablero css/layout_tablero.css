@@ -1,0 +1,18 @@
+.game-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Info */
+.info-posicion {
+  text-align: center;
+  background: rgba(255,255,255,0.9);
+  padding: 10px 20px;
+  border-radius: 15px;
+  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--negro);
+}

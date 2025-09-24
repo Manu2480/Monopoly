@@ -1,0 +1,49 @@
+@import url('base_tablero.css');
+@import url('layout_tablero.css');
+@import url('tablero.css');
+@import url('jugadores_tablero.css');
+@import url('dados_tablero.css');
+@import url('cartas_tablero.css');
+@import url('controles_tablero.css');
+
+/* 📱 Responsive móvil */
+@media (max-width: 767px) {
+  body { padding: 10px; }
+  .game-container { gap: 15px; }
+  .controles-centro { grid-template-columns: 1fr; gap: 15px; }
+  .contenedor-cartas,
+  .contenedor-dados {
+    width: 100%; margin: 0 auto; padding: 15px;
+  }
+  .mazo { width: 100%; max-width: 200px; height: auto; }
+  button { width: 100%; max-width: 250px; margin: 0 auto; }
+  .turno-banner { font-size: 18px; padding: 12px 18px; }
+  .casilla { min-height: 90px; }
+  .info-posicion { font-size: 14px; padding: 8px 12px; }
+  .jugador { width: 22px; height: 22px; font-size: 12px; }
+}
+
+/* 💻 Responsive tablet */
+@media (min-width: 768px) and (max-width: 1199px) {
+  body { padding: 15px; }
+  .game-container { gap: 18px; }
+  .contenedor-cartas,
+  .contenedor-dados { padding: 18px; }
+  button { font-size: 13px; padding: 10px 20px; }
+}
+
+/* 🔧 Ajustes extra para móviles angostos */
+@media (max-width: 600px) {
+  .game-container { padding: 0 5px; }
+  .contenedor-cartas,
+  .contenedor-dados {
+    width: 100%; max-width: 100%; padding: 12px;
+  }
+  .mazo {
+    width: 100%; max-width: 150px; height: auto;
+  }
+  .tablero-linear { padding: 10px; gap: 8px; }
+  .casilla { min-height: 80px; padding: 6px; }
+  button { max-width: 200px; }
+  input[type="number"] { width: 100%; max-width: 120px; }
+}

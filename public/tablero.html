@@ -2,75 +2,76 @@
 <html lang="es">
 
 <head>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🎲 Monopoly Web - Edición Premium</title>
-  <link rel="stylesheet" href="styles/tablero.css">
-
+  <link rel="stylesheet" href="styles/tablero css/main_tablero.css">
 </head>
 
 <body>
+
   <div class="game-container">
+
+    <!-- Banner de turno -->
     <div id="turno-actual" class="turno-banner">
-    🎮 Jugadores:
-    <div id="lista-jugadores" class="jugadores-barra"></div>
-  </div>
+      🎮 Jugadores:
+      <div id="lista-jugadores" class="jugadores-barra"></div>
+    </div>
 
-
+    <!-- Info posición -->
     <div class="info-posicion">
-      Mostrando casillas <span id="rango-casillas">1-11</span> | 
+      Mostrando casillas <span id="rango-casillas">1-11</span> |
       Jugador en casilla: <span id="posicion-actual">0</span>
     </div>
 
+    <!-- Tablero -->
     <div id="tablero-linear" class="tablero-linear">
       <!-- Las casillas se generan dinámicamente aquí -->
     </div>
 
+    <!-- Controles principales -->
     <div class="controles-centro">
+      <!-- 📦 Casilla dinámica -->
       <div class="contenedor-cartas">
-        <h3>🃏 Cartas Suerte</h3>
-        <div id="mazo-suerte" class="mazo">❓</div>
-        <button onclick="voltearCarta('suerte')">✨ Voltear carta</button>
+        <h3>📦 Casilla actual</h3>
+        <div id="panel-casilla" class="mazo">⬜</div>
+        <div id="acciones-casilla"></div>
       </div>
-      
+
+      <!-- 🎲 Dados -->
       <div class="contenedor-dados">
         <h3>🎲 Centro de Juego</h3>
         <div class="dados">
           <div id="dado1" class="dado">⚀</div>
           <div id="dado2" class="dado">⚀</div>
         </div>
-        <button onclick="tirarDados()">🎯 Tirar dados</button>
-
-        <!-- 🆕 Caja de texto para pasos manuales -->
+        <button id="btn-dados">🎲 Tirar dados</button>
         <input id="input-pasos" type="number" min="1" max="40" placeholder="Mover pasos"
-              style="width:120px; padding:6px; border-radius:8px; border:2px solid var(--azul); text-align:center; margin-top:10px;">
-        <button onclick="moverManual()">➡️ Mover</button>
+          style="width:120px; padding:6px; border-radius:8px; border:2px solid var(--azul); text-align:center; margin-top:10px;">
+        <button id="btn-mover">➡️ Mover</button>
       </div>
 
-      
+      <!-- 🏦 Banco -->
       <div class="contenedor-cartas">
-        <h3>🏛️ Cartas Comunidad</h3>
-        <div id="mazo-comunidad" class="mazo">🎁</div>
-        <button onclick="voltearCarta('comunidad')">🎁 Voltear carta</button>
+        <h3>🏦 Banco</h3>
+        <div class="mazo">💰</div>
+        <input id="monto-prestamo" type="number" min="1" placeholder="Monto"
+          style="width:120px; padding:6px; border-radius:8px; border:2px solid var(--azul); text-align:center; margin-top:10px;">
+        <button id="btn-prestamo">💵 Pedir préstamo</button>
       </div>
     </div>
 
+    <!-- Controles de navegación -->
     <div class="controles-navegacion">
-      <button id="btn-inicio" class="btn-navegacion" onclick="toggleJuego()">
-        ▶️ Iniciar Juego
-      </button>
-      <button class="btn-navegacion" onclick="cambiarTurno()">
-        ↻ Siguiente Turno
-      </button>
-      <button class="btn-navegacion" onclick="verPerfil()">
-        👀 Ver Perfil
-      </button>
+      <button id="btn-inicio">▶️ Iniciar Juego</button>
+      <button id="btn-turno">⏭️ Siguiente Turno</button>
+      <button id="btn-perfil">👤 Ver Perfil</button>
     </div>
 
   </div>
 
-  <script src="scripts/tablero.js"></script>
-
+  <!-- Importar el script principal como módulo -->
+  <script type="module" src="scripts/tablero_js/main_tablero.js"></script>
 </body>
+
 </html>

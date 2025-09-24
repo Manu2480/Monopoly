@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Luckiest+Guy&family=Roboto:wght@300;400;700&family=Montserrat:wght@400;600&display=swap');
+
+/* 🎨 Paleta Monopoly */
+:root {
+  --rojo: #E63946;
+  --verde: #06D6A0;
+  --azul: #118AB2;
+  --amarillo: #FFD166;
+  --gris: #F1FAEE;
+  --negro: #1D1D1D;
+}
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(180deg, #F7FBF8 0%, #EDF7F2 100%);
+  min-height: 100vh;
+  padding: 20px;
+  color: var(--negro);
+}

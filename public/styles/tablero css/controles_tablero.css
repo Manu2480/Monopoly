@@ -1,0 +1,57 @@
+/* Controles */
+.controles-centro {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin: 20px 0;
+}
+.contenedor-cartas,
+.contenedor-dados {
+  border: 3px solid var(--azul);
+  border-radius: 15px;
+  padding: 20px;
+  background: var(--gris);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+.contenedor-cartas h3,
+.contenedor-dados h3 {
+  font-family: 'Fredoka One', cursive;
+  color: var(--negro);
+  font-size: 16px;
+}
+
+/* Botones */
+button {
+  font-family: 'Fredoka One', cursive;
+  background: linear-gradient(90deg, var(--rojo), var(--azul));
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+button:hover { transform: translateY(-3px); }
+button:disabled {
+  background: linear-gradient(90deg, #aaa, #888) !important;
+  color: #444 !important;
+  cursor: not-allowed;
+  opacity: 0.8;
+  box-shadow: none;
+}
+
+.controles-navegacion {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.btn-navegacion {
+  background: linear-gradient(90deg, var(--azul), var(--verde));
+  min-width: 130px;
+}
