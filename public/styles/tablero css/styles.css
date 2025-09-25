@@ -1,0 +1,301 @@
+/* ====== RESET ====== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #fdfbfb, #ebedee);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  /* aquí va la ruta de tu imagen */
+  background-size: cover;   /* hace que la imagen cubra toda la pantalla */
+  background-position: center; /* centra la imagen */
+  background-repeat: no-repeat; /* evita que se repita */
+  font-family: Arial, sans-serif;
+}
+
+/* ====== CONTENEDOR PRINCIPAL ====== */
+.main-container {
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+}
+
+/* ====== ENCABEZADO ====== */
+.header {
+  background: #003366;
+  color: white;
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
+}
+.header h1 {
+  margin-bottom: 10px;
+}
+
+/* ====== ALERTA ====== */
+.alerta {
+  background: #ff4e50;
+  color: white;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* ====== TARJETAS ====== */
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+  text-align: left;
+}
+.card h2 {
+  margin-bottom: 15px;
+  color: #003366;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+input:focus {
+  border-color: #003366;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0, 51, 102, 0.5);
+}
+
+/* ====== OPCIONES ====== */
+.opciones {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+/* Fichas */
+.ficha {
+  font-size: 2rem;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  background: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.ficha:hover {
+  border-color: #003366;
+  transform: scale(1.15);
+}
+.ficha.active {
+  background: #003366;
+  color: white;
+  border-color: #003366;
+  transform: scale(1.2);
+}
+
+/* Colores */
+.color {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid #ccc;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.color:hover {
+  transform: scale(1.15);
+  border-color: #003366;
+}
+.color.active {
+  transform: scale(1.2);
+  border-color: #003366;
+}
+
+/* Colores específicos */
+.red { background: red; }
+.green { background: green; }
+.yellow { background: yellow; }
+.black { background: black; }
+.blue { background: blue; }
+
+/* ====== TABLA ====== */
+/* Contenedor más ancho para darle espacio a la tabla */
+.main-container {
+  width: 100%;
+  max-width: 980px; /* antes 700px: ahora más ancho */
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Tabla más grande y legible */
+/* Tabla principal con bordes bonitos */
+table {
+  width: 100%;
+  border-collapse: separate; /* Para que border-radius funcione */
+  border-spacing: 0;
+  font-size: 1rem;
+  border: 2px solid #007bff; /* borde principal azul */
+  border-radius: 10px; /* esquinas redondeadas */
+  overflow: hidden;
+}
+
+/* Encabezados */
+th {
+  background-color: #007bff;
+  color: white;
+  padding: 14px 12px;
+  text-align: center;
+  border-bottom: 2px solid #0056b3;
+}
+
+/* Celdas */
+td {
+  padding: 14px 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+}
+
+/* Última fila sin borde inferior */
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Resaltar filas al pasar el cursor */
+tbody tr:hover {
+  background-color: #f0f8ff;
+}
+
+/* Tabla responsive */
+.table-responsive {
+  overflow-x: auto;
+}
+
+/* Colores dentro de la tabla */
+.table-theme td .color {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid #ddd;
+  display: inline-block;
+}
+
+/* Opcional: añadir sombra sutil a la tabla */
+table {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+
+
+/* ====== BOTONES ====== */
+.btn {
+  background: #ccc;
+  color: black;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 10px;
+  width: 100%;
+}
+.btn:hover {
+  background: green;
+  color: white;
+  transform: scale(1.05);
+}
+.iniciar {
+  margin-top: 20px;
+  background: #27ae60;
+  color: white;
+  font-size: 1.1rem;    /* texto más grande */
+  padding: 12px 20px;   /* más alto y más ancho */
+  width: 100%;          /* ocupa todo el ancho del contenedor */
+  border: none;
+  border-radius: 8px;   /* esquinas redondeadas (opcional) */
+  cursor: pointer;
+}
+
+.btniniciar:hover {
+  background: #219150;
+}
+.btnIniciar  {
+  background: #ccc;
+  color: black;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 10px;
+  width: 100%;
+}
+
+/* ====== NOTA ====== */
+
+/* Estilos para el select de países */
+select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fff;
+  appearance: none; /* Quita el estilo por defecto */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  outline: none;
+  transition: border 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* Efecto al enfocar */
+select:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 6px rgba(79, 70, 229, 0.5);
+}
+
+/* Opciones */
+select option {
+  padding: 10px;
+}
+
+/* Contenedor para ponerle un icono de flecha */
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.select-wrapper::after {
+  content: "▼";
+  font-size: 12px;
+  color: #555;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
