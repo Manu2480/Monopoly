@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fin del Juego</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles/fin_css/fin.css">
+</head>
+<body>
+  <div id="monopoly-app" style="padding:20px;">
+    <h1 class="titulo">🏆 Fin Del Juego 🏆</h1>
+
+    <!-- ======================
+         CLASIFICACIÓN FINAL
+         ====================== -->
+    <div class="contenedor">
+      <h3>Clasificación Final</h3>
+      <!-- JS insertará resultados aquí -->
+    </div>
+
+    <!-- ======================
+         TARJETAS DE JUGADORES
+         ====================== -->
+    <div class="jugadores" style="margin-top:18px;">
+      
+      <!-- Tarjeta Jugador 1 -->
+      <div class="player-card" id="jugador-1">
+        <div class="header">
+          <span class="pais"></span>
+          <span class="nombre"></span>
+        </div>
+        <div class="cajas">
+          <div class="caja verde">
+            Dinero en Efectivo <br>
+            <strong class="dinero-efectivo">$0</strong>
+          </div>
+          <div class="caja azul">
+            Valor Propiedades <br>
+            <strong class="valor-propiedades">$0</strong>
+          </div>
+        </div>
+        <div class="propiedades">
+          <p><strong>Propiedades</strong> <span class="total">(0 total)</span></p>
+          <p>🏡 Terrenos: <span class="terrenos">0</span> &nbsp;&nbsp; 🚂 Ferrocarriles: <span class="ferrocarriles">0</span></p>
+          <p>⚡ Servicios: <span class="servicios">0</span> &nbsp;&nbsp; 🏠 Casas: <span class="casas">0</span></p>
+          <p>🏢 Hoteles: <span class="hoteles">0</span></p>
+        </div>
+        <div class="footer">
+          <strong>Patrimonio Total:</strong> <span class="patrimonio">$0</span>
+        </div>
+      </div>
+
+      <!-- Tarjeta Jugador 2 -->
+      <div class="player-card" id="jugador-2">
+        <div class="header">
+          <span class="pais"></span>
+          <span class="nombre"></span>
+        </div>
+        <div class="cajas">
+          <div class="caja verde">
+            Dinero en Efectivo <br>
+            <strong class="dinero-efectivo">$0</strong>
+          </div>
+          <div class="caja azul">
+            Valor Propiedades <br>
+            <strong class="valor-propiedades">$0</strong>
+          </div>
+        </div>
+        <div class="propiedades">
+          <p><strong>Propiedades</strong> <span class="total">(0 total)</span></p>
+          <p>🏡 Terrenos: <span class="terrenos">0</span> &nbsp;&nbsp; 🚂 Ferrocarriles: <span class="ferrocarriles">0</span></p>
+          <p>⚡ Servicios: <span class="servicios">0</span> &nbsp;&nbsp; 🏠 Casas: <span class="casas">0</span></p>
+          <p>🏢 Hoteles: <span class="hoteles">0</span></p>
+        </div>
+        <div class="footer">
+          <strong>Patrimonio Total:</strong> <span class="patrimonio">$0</span>
+        </div>
+      </div>
+
+      <!-- Tarjeta Jugador 3 -->
+      <div class="player-card" id="jugador-3">
+        <div class="header">
+          <span class="pais"></span>
+          <span class="nombre"></span>
+        </div>
+        <div class="cajas">
+          <div class="caja verde">
+            Dinero en Efectivo <br>
+            <strong class="dinero-efectivo">$0</strong>
+          </div>
+          <div class="caja azul">
+            Valor Propiedades <br>
+            <strong class="valor-propiedades">$0</strong>
+          </div>
+        </div>
+        <div class="propiedades">
+          <p><strong>Propiedades</strong> <span class="total">(0 total)</span></p>
+          <p>🏡 Terrenos: <span class="terrenos">0</span> &nbsp;&nbsp; 🚂 Ferrocarriles: <span class="ferrocarriles">0</span></p>
+          <p>⚡ Servicios: <span class="servicios">0</span> &nbsp;&nbsp; 🏠 Casas: <span class="casas">0</span></p>
+          <p>🏢 Hoteles: <span class="hoteles">0</span></p>
+        </div>
+        <div class="footer">
+          <strong>Patrimonio Total:</strong> <span class="patrimonio">$0</span>
+        </div>
+      </div>
+
+      <!-- Tarjeta Jugador 4 -->
+      <div class="player-card" id="jugador-4">
+        <div class="header">
+          <span class="pais"></span>
+          <span class="nombre"></span>
+        </div>
+        <div class="cajas">
+          <div class="caja verde">
+            Dinero en Efectivo <br>
+            <strong class="dinero-efectivo">$0</strong>
+          </div>
+          <div class="caja azul">
+            Valor Propiedades <br>
+            <strong class="valor-propiedades">$0</strong>
+          </div>
+        </div>
+        <div class="propiedades">
+          <p><strong>Propiedades</strong> <span class="total">(0 total)</span></p>
+          <p>🏡 Terrenos: <span class="terrenos">0</span> &nbsp;&nbsp; 🚂 Ferrocarriles: <span class="ferrocarriles">0</span></p>
+          <p>⚡ Servicios: <span class="servicios">0</span> &nbsp;&nbsp; 🏠 Casas: <span class="casas">0</span></p>
+          <p>🏢 Hoteles: <span class="hoteles">0</span></p>
+        </div>
+        <div class="footer">
+          <strong>Patrimonio Total:</strong> <span class="patrimonio">$0</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================
+       BOTONES DE CONTROL
+       ====================== -->
+  <div class="acciones">
+    <button class="btn-nuevo">🎮 Nuevo Juego</button>
+    <button class="btn-cerrar">Cerrar</button>
+  </div>
+
+  <!-- JS -->
+  <script src="scripts/fin_js/fin.js"></script>
+</body>
+</html>

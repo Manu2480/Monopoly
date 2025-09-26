@@ -1,0 +1,167 @@
+/* Scoped styles under #monopoly-app to beat Bootstrap specificity */
+#monopoly-app .titulo {
+    color: green;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    margin-bottom: 10px;
+  }
+  
+  /* Clasificación final */
+  #monopoly-app .contenedor {
+    width: 380px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 2px solid rgb(137, 199, 232);
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+  }
+  
+  #monopoly-app h3 {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  #monopoly-app .fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    background: #fff;
+  }
+  
+  #monopoly-app .posicion {
+    font-weight: bold;
+  }
+  
+  #monopoly-app .jugador strong {
+    color: #ff9800;
+  }
+  
+  #monopoly-app .dinero span {
+    color: green;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  /* Tarjetas de jugadores (player-card evita .card de Bootstrap) */
+  #monopoly-app .jugadores {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    flex-wrap: wrap;
+  }
+  
+  #monopoly-app .player-card {
+    width: 230px;
+    border: 2px solid gold;
+    border-radius: 12px;
+    background: #fff;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+    margin-bottom: 12px;
+  }
+  
+  #monopoly-app .player-card .header {
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  #monopoly-app .player-card .nombre {
+    color: #ff9800;
+    margin-left: 5px;
+  }
+  
+  #monopoly-app .player-card .cajas {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  #monopoly-app .player-card .caja {
+    flex: 1;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 13px;
+    text-align: center;
+  }
+  
+  #monopoly-app .player-card .caja.verde {
+    background: #e8f5e9;
+    color: green;
+  }
+  
+  #monopoly-app .player-card .caja.azul {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  #monopoly-app .player-card .propiedades p {
+    font-size: 13px;
+    margin: 3px 0;
+  }
+  
+  #monopoly-app .player-card .total {
+    color: gray;
+    font-size: 12px;
+  }
+  
+  #monopoly-app .player-card .footer {
+    margin-top: 10px;
+    border-top: 1px solid #ddd;
+    padding-top: 5px;
+  }
+  
+  #monopoly-app .player-card .dinero {
+    color: green;
+    font-weight: bold;
+  }
+  /* Contenedor de los botones */
+  .acciones {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  
+  /* Botón "Nuevo Juego" */
+  .btn-nuevo {
+    background-color: #28a745;   /* Verde */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-nuevo:hover {
+    background-color: #218838; /* Verde más oscuro */
+  }
+  
+  /* Botón "Cerrar" */
+  .btn-cerrar {
+    background-color: white;
+    color: #333;
+    border: 2px solid #ccc;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-cerrar:hover {
+    background-color: #f2f2f2; /* Gris claro */
+  }
+  
+  
