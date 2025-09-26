@@ -23,13 +23,13 @@ export function renderizarBarraJugadores(jugadores) {
   if (!barra) return;
   barra.innerHTML = "";
 
-  jugadores.forEach((j) => {
+  for (const j of jugadores) {
     const span = document.createElement("span");
     span.textContent = `${j.ficha || ""} ${j.nombre}`;
     span.classList.add("jugador-barra");
     span.style.color = j.color;
 
-    // ✅ ahora sí usamos tus clases de CSS
+    // Clases activo/inactivo
     if (j.turno) {
       span.classList.add("activo");
       span.classList.remove("inactivo");
@@ -39,7 +39,7 @@ export function renderizarBarraJugadores(jugadores) {
     }
 
     barra.appendChild(span);
-  });
+  }
 }
 
 export function mostrarPanelCasilla(casilla, jugador, tableroData) {
@@ -53,20 +53,31 @@ export function mostrarPanelCasilla(casilla, jugador, tableroData) {
     return;
   }
 
-  if (casilla.type === "property" || casilla.type === "railroad") {
-    panel.textContent = `🏠 ${casilla.name}`;
-    const btn = document.createElement("button");
-    btn.textContent = "Comprar";
-    btn.onclick = () => alert(`${jugador.nombre} compró ${casilla.name}`);
-    acciones.appendChild(btn);
-  } else if (casilla.type === "chance" || casilla.type === "community_chest") {
-    panel.textContent = casilla.type === "chance" ? "❓ Suerte" : "🎁 Comunidad";
-    const btn = document.createElement("button");
-    btn.textContent = "Voltear carta";
-    btn.onclick = () => voltearCarta(casilla.type, tableroData);
-    acciones.appendChild(btn);
-  } else {
-    panel.textContent = `ℹ️ ${casilla.name}`;
+  // Cambio de if/else if por switch
+  switch (casilla.type) {
+    case "property":
+    case "railroad": {
+      panel.textContent = `🏠 ${casilla.name}`;
+      const btn = document.createElement("button");
+      btn.textContent = "Comprar";
+      btn.onclick = () => alert(`${jugador.nombre} compró ${casilla.name}`);
+      acciones.appendChild(btn);
+      break;
+    }
+
+    case "chance":
+    case "community_chest": {
+      panel.textContent = casilla.type === "chance" ? "❓ Suerte" : "🎁 Comunidad";
+      const btn = document.createElement("button");
+      btn.textContent = "Voltear carta";
+      btn.onclick = () => voltearCarta(casilla.type, tableroData);
+      acciones.appendChild(btn);
+      break;
+    }
+
+    default:
+      panel.textContent = `ℹ️ ${casilla.name}`;
+      break;
   }
 }
 
@@ -93,13 +104,16 @@ export function mostrarResultadoDados(suma) {
 
 export function agregarEfectosVisuales() {
   const casillas = document.querySelectorAll(".casilla");
-  casillas.forEach((casilla, index) => {
+
+  let i = 0;
+  for (const casilla of casillas) {
     casilla.style.opacity = "0";
     casilla.style.transform = "scale(0.95)";
     setTimeout(() => {
       casilla.style.transition = "all 0.5s ease";
       casilla.style.opacity = "1";
       casilla.style.transform = "scale(1)";
-    }, index * 40);
-  });
+    }, i * 40);
+    i++;
+  }
 }

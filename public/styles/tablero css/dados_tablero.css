@@ -1,5 +1,9 @@
 /* Dados */
-.dados { display: flex; gap: 15px; }
+.dados {
+  display: flex;
+  gap: 15px;
+}
+
 .dado {
   font-size: 34px;
   border: 3px solid var(--negro);
@@ -12,6 +16,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.3s;
+}
+
+/* 🎲 Animación de rodar */
+@keyframes rodar {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.dado.rodando {
+  animation: rodar 0.7s ease;
 }
 
 /* Resultado de dados (popup) */

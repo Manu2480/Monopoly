@@ -2,34 +2,45 @@ import { renderizarTablero } from "./tablero.js";
 import { renderizarBarraJugadores, mostrarPanelCasilla } from "./ui_tablero.js";
 
 export function moverJugador(idJugador, pasos, jugadores, tableroData, casillasVisibles, calcularRangoVisible) {
-    const jugador = jugadores.find(j => j.id === idJugador);
-    if (!jugador) return;
+  const jugador = jugadores.find(j => j.id === idJugador);
+  if (!jugador) return;
 
-    const totalCasillas = tableroData.casillas.length || 40;
-    jugador.posicionActual = ((jugador.posicionActual || 0) + pasos) % totalCasillas;
+  const totalCasillas = tableroData.casillas.length || 40;
+  const posicionActual = jugador.posicionActual ?? 0;
 
-    renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
-    renderizarBarraJugadores(jugadores);
-    mostrarPanelCasilla(tableroData.casillas[jugador.posicionActual], jugador, tableroData);
+  jugador.posicionActual = (posicionActual + pasos) % totalCasillas;
+
+  renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
+  renderizarBarraJugadores(jugadores);
+  mostrarPanelCasilla(tableroData.casillas[jugador.posicionActual], jugador, tableroData);
 }
 
 export function cambiarTurno(jugadores, indiceTurno, setIndiceTurno, setPuedeTirar, setHaMovido) {
-    jugadores[indiceTurno].turno = false;
-    const nuevoTurno = (indiceTurno + 1) % jugadores.length;
-    jugadores[nuevoTurno].turno = true;
+  // Desactivar turno actual
+  jugadores[indiceTurno].turno = false;
 
-    setIndiceTurno(nuevoTurno);
-    setPuedeTirar(true);
-    setHaMovido(false);
+  // Calcular nuevo turno
+  const nuevoTurno = (indiceTurno + 1) % jugadores.length;
+  jugadores[nuevoTurno].turno = true;
 
-    return jugadores[nuevoTurno];
+  // Actualizar estado externo
+  setIndiceTurno(nuevoTurno);
+  setPuedeTirar(true);
+  setHaMovido(false);
+
+  return jugadores[nuevoTurno];
 }
 
 export function verPerfil(jugadores, indiceTurno) {
-    const jugador = jugadores[indiceTurno];
-    if (!jugador) {
-        alert("No hay jugador en turno.");
-        return;
-    }
-    alert(`👤 ${jugador.nombre}\n💰 Dinero: ${jugador.dinero}\n📍 Casilla: ${jugador.posicionActual}`);
+  const jugador = jugadores[indiceTurno];
+  if (!jugador) {
+    alert("No hay jugador en turno.");
+    return;
+  }
+
+  alert(`
+👤 ${jugador.nombre}
+💰 Dinero: ${jugador.dinero}
+📍 Casilla: ${jugador.posicionActual}
+  `);
 }

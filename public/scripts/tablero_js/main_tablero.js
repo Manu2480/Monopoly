@@ -18,29 +18,58 @@ let juegoIniciado = false;
 // ======================== FUNCIONES AUXILIARES ========================
 function setEstadoBotones(estado) {
   const btnInicio = document.getElementById("btn-inicio");
-  const btnDados = document.getElementById("btn-dados");
-  const btnMover = document.getElementById("btn-mover");
-  const btnPrestamo = document.getElementById("btn-prestamo");
-  const btnPerfil = document.getElementById("btn-perfil");
-  const btnTurno = document.getElementById("btn-turno");
+  const botones = [
+    document.getElementById("btn-dados"),
+    document.getElementById("btn-mover"),
+    document.getElementById("btn-prestamo"),
+    document.getElementById("btn-perfil"),
+    document.getElementById("btn-turno"),
+  ];
 
-  if (estado === "no-iniciado") {
-    btnInicio.disabled = false;
-    btnInicio.textContent = "▶️ Iniciar Juego";
-    [btnDados, btnMover, btnPrestamo, btnPerfil, btnTurno].forEach(b => b.disabled = true);
-  }
+  switch (estado) {
+    case "no-iniciado":
+      btnInicio.disabled = false;
+      btnInicio.textContent = "▶️ Iniciar Juego";
+      botones.forEach(b => (b.disabled = true));
+      break;
 
-  if (estado === "jugando") {
-    btnInicio.disabled = false;
-    btnInicio.textContent = "⏹️ Finalizar Juego";
-    [btnDados, btnMover, btnPrestamo, btnPerfil, btnTurno].forEach(b => b.disabled = false);
-  }
+    case "jugando":
+      btnInicio.disabled = false;
+      btnInicio.textContent = "⏹️ Finalizar Juego";
+      botones.forEach(b => (b.disabled = false));
+      break;
 
-  if (estado === "finalizado") {
-    btnInicio.disabled = false;
-    btnInicio.textContent = "▶️ Iniciar Juego";
-    [btnDados, btnMover, btnPrestamo, btnPerfil, btnTurno].forEach(b => b.disabled = true);
+    case "finalizado":
+      btnInicio.disabled = false;
+      btnInicio.textContent = "▶️ Iniciar Juego";
+      botones.forEach(b => (b.disabled = true));
+      break;
   }
+}
+
+function iniciarJuego() {
+  indiceTurno = 0;
+  jugadores.forEach(j => (j.turno = false));
+  if (jugadores[indiceTurno]) jugadores[indiceTurno].turno = true;
+
+  juegoIniciado = true;
+  puedeTirar = true;
+  haMovido = false;
+
+  renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
+  renderizarBarraJugadores(jugadores);
+
+  setEstadoBotones("jugando");
+}
+
+function finalizarJuego() {
+  jugadores.forEach(j => (j.turno = false));
+  juegoIniciado = false;
+
+  renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
+  renderizarBarraJugadores(jugadores);
+
+  setEstadoBotones("finalizado");
 }
 
 // ======================== INIT ========================
@@ -61,30 +90,7 @@ window.onload = async () => {
 
     // ▶️ Iniciar / Finalizar Juego
     document.getElementById("btn-inicio").addEventListener("click", () => {
-      if (!juegoIniciado) {
-        // Arrancar juego
-        indiceTurno = 0;
-        jugadores.forEach(j => j.turno = false);
-        if (jugadores[indiceTurno]) jugadores[indiceTurno].turno = true;
-
-        juegoIniciado = true;
-        puedeTirar = true;
-        haMovido = false;
-
-        renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
-        renderizarBarraJugadores(jugadores);
-
-        setEstadoBotones("jugando");
-      } else {
-        // Finalizar juego
-        jugadores.forEach(j => j.turno = false);
-        juegoIniciado = false;
-
-        renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
-        renderizarBarraJugadores(jugadores);
-
-        setEstadoBotones("finalizado");
-      }
+      juegoIniciado ? finalizarJuego() : iniciarJuego();
     });
 
     // 🎲 Tirar dados

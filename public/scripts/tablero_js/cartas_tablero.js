@@ -1,18 +1,33 @@
 export function voltearCarta(tipo, tableroData) {
-    let mazo = document.getElementById("panel-casilla");
-    let cartas = tipo === "suerte" ? tableroData.chance : tableroData.community_chest;
+  const mazo = document.getElementById("panel-casilla");
+  if (!mazo) return;
 
-    if (!cartas || cartas.length === 0) {
-        mazo.textContent = "No hay cartas";
-        return;
-    }
+  let cartas;
+  switch (tipo) {
+    case "suerte":
+      cartas = tableroData.chance;
+      break;
+    case "comunidad":
+      cartas = tableroData.community_chest;
+      break;
+    default:
+      mazo.textContent = "Tipo de carta desconocido";
+      return;
+  }
 
-    mazo.style.transform = 'rotateY(90deg)';
-    mazo.style.transition = 'transform 0.3s ease';
+  if (!cartas || cartas.length === 0) {
+    mazo.textContent = `No hay cartas de ${tipo}`;
+    return;
+  }
 
-    setTimeout(() => {
-        let carta = cartas[Math.floor(Math.random() * cartas.length)];
-        mazo.innerHTML = `<div class="texto">${carta.description || carta.text || ""}</div>`;
-        mazo.style.transform = 'rotateY(0deg)';
-    }, 300);
+  // Animación de volteo
+  mazo.style.transform = "rotateY(90deg)";
+  mazo.style.transition = "transform 0.3s ease";
+
+  setTimeout(() => {
+    const carta = cartas[Math.floor(Math.random() * cartas.length)];
+    const texto = carta.description || carta.text || "Carta sin descripción";
+    mazo.innerHTML = `<div class="texto">${texto}</div>`;
+    mazo.style.transform = "rotateY(0deg)";
+  }, 300);
 }
