@@ -27,7 +27,7 @@
 /* Botones */
 button {
   font-family: 'Fredoka One', cursive;
-  background: linear-gradient(90deg, var(--rojo), var(--azul));
+  background: linear-gradient(90deg, var(--verde), var(--azul)); /* ✅ cambio */
   color: white;
   border: none;
   padding: 12px 24px;
@@ -36,6 +36,7 @@ button {
   cursor: pointer;
   transition: transform 0.2s ease;
 }
+
 button:hover { transform: translateY(-3px); }
 button:disabled {
   background: linear-gradient(90deg, #aaa, #888) !important;
@@ -52,6 +53,6 @@ button:disabled {
   flex-wrap: wrap;
 }
 .btn-navegacion {
-  background: linear-gradient(90deg, var(--azul), var(--verde));
+  background: linear-gradient(90deg, var(--verde), var(--amarillo)); /* ✅ cambio */
   min-width: 130px;
 }

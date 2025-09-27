@@ -1,0 +1,29 @@
+/* ================= ICONOS ================= */
+
+/* Estilo base */
+.fa-solid, .fa-regular {
+  width: 24px;   /* un poco más grandes */
+  height: 24px;
+  vertical-align: middle;
+  transition: color 0.25s ease;
+}
+
+/* Iconos dentro de botones */
+button i {
+  margin-right: 6px;
+}
+
+/* Colores por sección (estado normal) */
+.turno-banner .fa-users { color: #2c3e50; }
+.contenedor-cartas h3 .fa-box-open { color: #f39c12; }
+.contenedor-dados h3 .fa-dice { color: #8e44ad; }
+#btn-dados i { color: #8e44ad; }
+#btn-mover i { color: #8e44ad; }
+#contenedor-perfil h3 .fa-user { color: #2980b9; }
+#btn-inicio i { color: #2ecc71; }
+#btn-turno i { color: #3498db; }
+
+/* Hover vibrante (sobre todos los íconos en botones) */
+button:hover i {
+  color: #f1c40f !important; /* forzamos prioridad */
+}

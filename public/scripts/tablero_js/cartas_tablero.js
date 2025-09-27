@@ -4,14 +4,14 @@ export function voltearCarta(tipo, tableroData) {
 
   let cartas;
   switch (tipo) {
-    case "suerte":
+    case "chance": // cartas de suerte
       cartas = tableroData.chance;
       break;
-    case "comunidad":
+    case "community_chest": // cartas de comunidad
       cartas = tableroData.community_chest;
       break;
     default:
-      mazo.textContent = "Tipo de carta desconocido";
+      mazo.textContent = `Tipo de carta desconocido: ${tipo}`;
       return;
   }
 
@@ -31,3 +31,12 @@ export function voltearCarta(tipo, tableroData) {
     mazo.style.transform = "rotateY(0deg)";
   }, 300);
 }
+
+export function resetPanelCarta() {
+  const mazo = document.getElementById("panel-casilla");
+  if (mazo) {
+    mazo.textContent = "⬜"; // valor por defecto
+    mazo.style.transform = "none";
+  }
+}
+

@@ -6,6 +6,7 @@ import { tirarDados } from "./dados_tablero.js";
 import { renderizarPerfilJugador, resetPerfilJugador } from "./perfil_jugador_tablero.js";
 import { cambiarTurno, moverJugador } from "./jugadores_tablero.js";
 import { determinarCasillasVisibles, calcularRangoVisible } from "./utils_tablero.js";
+import { resetPanelCarta } from "./cartas_tablero.js";
 
 // ======================== VARIABLES GLOBALES ========================
 let tableroData = { casillas: [], community_chest: [], chance: [] };
@@ -140,12 +141,15 @@ window.onload = async () => {
       renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
       renderizarBarraJugadores(jugadores);
       renderizarPerfilJugador(jugadores[indiceTurno]); // 👈 PERFIL
+      resetPanelCarta(); // 👈 volver a ⬜ al cambiar turno
     });
 
     window.addEventListener("resize", () => {
       casillasVisibles = determinarCasillasVisibles();
       renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
     });
+    // Inicializar Lucide para renderizar los íconos
+    lucide.createIcons();
   } catch (err) {
     console.error("❌ Error iniciando el juego:", err);
   }

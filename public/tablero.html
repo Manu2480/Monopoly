@@ -4,8 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎲 Monopoly Web - Edición Premium</title>
+  <title>Monopoly Web - Edición Premium</title>
   <link rel="stylesheet" href="styles/tablero_css/main_tablero.css">
+  <!-- ICONOS - CDN Font Awesome -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"rel="stylesheet">
+
 </head>
 
 <body>
@@ -14,7 +18,7 @@
 
     <!-- Banner de turno -->
     <div id="turno-actual" class="turno-banner">
-      🎮 Jugadores:
+      <i class="fa-solid fa-users"></i> Jugadores:
       <div id="lista-jugadores" class="jugadores-barra"></div>
     </div>
 
@@ -34,27 +38,37 @@
 
       <!-- 📦 Casilla dinámica -->
       <div class="contenedor-cartas">
-        <h3>📦 Casilla actual</h3>
-        <div id="panel-casilla" class="mazo">⬜</div>
+        <h3><i class="fa-solid fa-box-open"></i> Casilla actual</h3>
+        <div id="panel-casilla" class="mazo">
+          <i class="fa-regular fa-square"></i>
+        </div>
         <div id="acciones-casilla"></div>
       </div>
 
       <!-- 🎲 Dados -->
       <div class="contenedor-dados">
-        <h3>🎲 Centro de Juego</h3>
+        <h3><i class="fa-solid fa-dice"></i> Centro de Juego</h3>
         <div class="dados">
-          <div id="dado1" class="dado">⚀</div>
-          <div id="dado2" class="dado">⚀</div>
+          <div id="dado1" class="dado"><i class="fa-solid fa-dice-one"></i></div>
+          <div id="dado2" class="dado"><i class="fa-solid fa-dice-two"></i></div>
         </div>
-        <button id="btn-dados">🎲 Tirar dados</button>
+        
+        <button id="btn-dados">
+          <i class="fa-solid fa-dice"></i>
+          Tirar dados
+        </button>
+
         <input id="input-pasos" type="number" min="1" max="40" placeholder="Mover pasos"
           style="width:120px; padding:6px; border-radius:8px; border:2px solid var(--azul); text-align:center; margin-top:10px;">
-        <button id="btn-mover">➡️ Mover</button>
+        <button id="btn-mover">
+          <i class="fa-solid fa-arrow-right"></i>
+          Mover
+        </button>
       </div>
 
-      <!-- 👤 Perfil del jugador (reemplaza banco) -->
+      <!-- 👤 Perfil del jugador -->
       <div id="contenedor-perfil" class="contenedor-cartas">
-        <h3>👤 Perfil</h3>
+        <h3><i class="fa-solid fa-user"></i> Perfil</h3>
         <div id="perfil-jugador" class="perfil-box"></div>
       </div>
 
@@ -62,13 +76,19 @@
 
     <!-- Controles de navegación -->
     <div class="controles-navegacion">
-      <button id="btn-inicio">▶️ Iniciar Juego</button>
-      <button id="btn-turno">⏭️ Siguiente Turno</button>
+      <button id="btn-inicio">
+        <i class="fa-solid fa-play"></i>
+        Iniciar Juego
+      </button>
+      <button id="btn-turno">
+        <i class="fa-solid fa-forward-step"></i>
+        Siguiente Turno
+      </button>
     </div>
 
   </div>
 
-  <!-- Importar el script principal como módulo -->
+  <!-- Script principal -->
   <script type="module" src="scripts/tablero_js/main_tablero.js"></script>
 </body>
 
