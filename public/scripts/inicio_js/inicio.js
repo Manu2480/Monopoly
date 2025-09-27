@@ -245,15 +245,35 @@ document.addEventListener('DOMContentLoaded', mostrarPaisesEnSelect);
       });
 
       // ===================== INICIAR JUEGO =====================
+      // ===================== INICIAR JUEGO REDIRIGIENDO A TABLERO.HTML=====================
       btnIniciar && btnIniciar.addEventListener("click", () => {
-        mensajeDiv.innerHTML = ""; mensajeDiv.className = "mostrarError";
+        mensajeDiv.innerHTML = ""; 
+        mensajeDiv.className = "mostrarError";
 
-        if (jugadores.length < 2) { mensajeDiv.innerHTML = "⚠️ Se necesitan mínimo 2 jugadores."; mensajeDiv.classList.add("error"); }
-        else if (jugadores.length > 4) { mensajeDiv.innerHTML = "⚠️ Máximo 4 jugadores."; mensajeDiv.classList.add("error"); }
-        else { mensajeDiv.innerHTML = `🎉 Juego iniciado con ${jugadores.length} jugador(es)!`; mensajeDiv.classList.add("exito"); }
+        if (jugadores.length < 2) { 
+          mensajeDiv.innerHTML = "⚠️ Se necesitan mínimo 2 jugadores."; 
+          mensajeDiv.classList.add("error"); 
+        }
+        else if (jugadores.length > 4) { 
+          mensajeDiv.innerHTML = "⚠️ Máximo 4 jugadores."; 
+          mensajeDiv.classList.add("error"); 
+        }
+        else { 
+          mensajeDiv.innerHTML = `🎉 Juego iniciado con ${jugadores.length} jugador(es)!`; 
+          mensajeDiv.classList.add("exito");
 
-        setTimeout(() => { mensajeDiv.innerHTML = ""; mensajeDiv.className = "mostrarError"; }, 3000);
+          // 👉 Redirigir a tablero.html después de un pequeño delay
+          setTimeout(() => {
+            window.location.href = "tablero.html";
+          }, 800);
+        }
+
+        setTimeout(() => { 
+          mensajeDiv.innerHTML = ""; 
+          mensajeDiv.className = "mostrarError"; 
+        }, 3000);
       });
+
 
       // ===================== INICIALIZAR =====================
       

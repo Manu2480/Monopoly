@@ -3,7 +3,6 @@ import { agregarJugadorACasilla, agregarEfectosVisuales } from "./ui_tablero.js"
 export function crearCasilla(casilla) {
     const div = document.createElement("div");
     div.classList.add("casilla");
-
     const tipo = casilla.type || "generic";
     div.setAttribute("data-tipo", tipo);
 

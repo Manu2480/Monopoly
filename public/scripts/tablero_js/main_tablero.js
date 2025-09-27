@@ -1,3 +1,4 @@
+// ======================== IMPORTS ========================
 import { cargarTablero, cargarJugadores } from "./api_tablero.js";
 import { renderizarTablero } from "./tablero.js";
 import { renderizarBarraJugadores } from "./ui_tablero.js";
@@ -8,7 +9,7 @@ import { determinarCasillasVisibles, calcularRangoVisible } from "./utils_tabler
 
 // ======================== VARIABLES GLOBALES ========================
 let tableroData = { casillas: [], community_chest: [], chance: [] };
-let jugadores = [];
+let jugadores = []; // ahora se cargarán siempre desde cargarJugadores()
 let indiceTurno = 0;
 let puedeTirar = true;
 let haMovido = false;
@@ -75,8 +76,10 @@ function finalizarJuego() {
 // ======================== INIT ========================
 window.onload = async () => {
   try {
-    // Cargar tablero y jugadores
+    // Cargar tablero
     await cargarTablero(tableroData);
+
+    // 👇 Cargar jugadores (LocalStorage primero, JSON solo si no hay nada)
     jugadores = await cargarJugadores();
 
     casillasVisibles = determinarCasillasVisibles();
