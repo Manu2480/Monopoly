@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monopoly - Configurar Jugadores</title>
+  <link rel="stylesheet" href="styles/inicio_css/inicio.css">
+  <script type="module" src="scripts/inicio_js/inicio.js"></script>
+
+</head>
+
+<body>
+  <div class="main-container">
+
+    <!-- ENCABEZADO -->
+    <header class="header">
+      <h1>🏠 MONOPOLY 🏠</h1>
+      <p>Configura a tus jugadores antes de iniciar la partida</p>
+    </header>
+
+    <!-- ALERTA -->
+    <div class="alerta">
+      🔔 Debes tener <strong>mínimo 2</strong> jugadores y <strong>máximo 4</strong> para iniciar.
+    </div>
+
+    <!-- FORMULARIO -->
+    <section class="card">
+      <h2>➕ Agregar Jugador</h2>
+
+      <label for="nombre">Nombre del jugador</label>
+      <input type="text" id="nombre" placeholder="Ingresa tu nombre">
+
+      <!-- País -->
+      <div class="select-wrapper">
+        <label for="country">País:</label>
+        <select id="country" required>
+          <option value="">-- Selecciona un país --</option>
+        </select>
+        <div id="countryError" class="error"></div>
+      </div>
+
+
+
+      <label>Elige tu ficha</label>
+      <div class="opciones">
+        <button type="button" class="ficha">🎩</button>
+        <button type="button" class="ficha">🐘</button>
+        <button type="button" class="ficha">⛵</button>
+        <button type="button" class="ficha">✈️</button>
+        <button type="button" class="ficha">🎸</button>
+        <button type="button" class="ficha">🏠</button>
+      </div>
+
+      <label>Elige tu color</label>
+      <div class="opciones">
+        <button type="button" class="color red"></button>
+        <button type="button" class="color green"></button>
+        <button type="button" class="color yellow"></button>
+        <button type="button" class="color black"></button>
+        <button type="button" class="color blue"></button>
+      </div>
+
+      <button id="agregar" class="btn">Agregar Jugador</button>
+    </section>
+
+    <!-- TABLA -->
+    <section class="card">
+      <h2>📋 Lista de Jugadores</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>País</th>
+            <th>Nombre</th>
+            <th>Ficha</th>
+            <th>Color</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-jugadores"></tbody>
+      </table>
+    </section>
+
+    <!-- BOTÓN INICIAR -->
+    <div class="acciones">
+      <button class="btnIniciar">🚀 Iniciar Juego</button>
+    </div>
+
+    <div class="mostrarError"></div>
+  </div>
+</body>
+
+</html>

@@ -2,16 +2,16 @@
   {
     "id": 1758583272028,
     "nombre": "Manuela",
-    "pais": "Colombia",
+    "pais": "Venezuela",
     "ficha": "✈️",
     "color": "blue",
-    "dinero": 980,
+    "dinero": 1000,
     "propiedades": [
       {
         "idPropiedad": 1,
-        "casas": 2,
+        "casas": 3,
         "hotel": 0,
-        "hipotecado": false
+        "hipotecado": true
       },
       {
         "idPropiedad": 5,
@@ -35,7 +35,7 @@
       {
         "idPropiedad": 27,
         "casas": 0,
-        "hotel": 0,
+        "hotel": 10,
         "hipotecado": false
       },
       {
@@ -78,7 +78,7 @@
     "propiedades": [
       {
         "idPropiedad": 24,
-        "casas": 1,
+        "casas": 5,
         "hotel": 0,
         "hipotecado": false
       },

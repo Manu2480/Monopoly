@@ -163,5 +163,43 @@
   .btn-cerrar:hover {
     background-color: #f2f2f2; /* Gris claro */
   }
-  
-  
+  /* ======================
+   Estilos para íconos
+   ====================== */
+.bi {
+  font-size: 18px; /* tamaño uniforme */
+  vertical-align: middle;
+}
+
+/* Íconos personalizados */
+.bi-trophy-fill {
+  color: gold;
+}
+
+.bi-house-fill {
+  color: brown;
+}
+
+.bi-train-front-fill {
+  color: #333; /* gris oscuro */
+}
+
+.bi-lightning-fill {
+  color: orange;
+}
+
+.bi-house-door-fill {
+  color: #007bff; /* azul Bootstrap */
+}
+
+.bi-building {
+  color: #6c757d; /* gris Bootstrap */
+}
+
+.bi-controller {
+  color: purple;
+}
+/* Ícono ferrocarriles en amarillo */
+.icon-ferrocarril {
+  color: #f1c40f; /* amarillo dorado */
+}
