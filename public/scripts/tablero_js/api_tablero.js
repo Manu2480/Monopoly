@@ -42,7 +42,7 @@ export async function cargarTablero(tableroData) {
 }
 
 
-//Cargar jugadores desde el local storage
+//Cargar jugadores desde el local storage --> console.table(JSON.parse(localStorage.getItem("monopoly_jugadores")));
 export async function cargarJugadores() {
   try {
     // 👇 Primero intenta leer desde LocalStorage

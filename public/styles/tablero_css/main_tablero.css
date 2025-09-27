@@ -6,6 +6,55 @@
 @import url('cartas_tablero.css');
 @import url('controles_tablero.css');
 
+.perfil-jugador {
+  grid-column: 1 / -1;        /* ocupa todo el ancho del grid */
+  background: #fff;
+  border: 2px solid var(--azul);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.perfil-jugador h2 {
+  margin-bottom: 12px;
+  font-size: 1.3rem;
+}
+
+.perfil-jugador ul {
+  list-style: none;
+  padding: 0;
+}
+
+.perfil-jugador li {
+  margin: 6px 0;
+  font-size: 1rem;
+}
+
+#cerrar-perfil {
+  margin-top: 15px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: crimson;
+  color: white;
+  cursor: pointer;
+}
+
+.perfil-jugador.oculto {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease-in-out;
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
 /* 📱 Responsive móvil */
 @media (max-width: 767px) {
   body { padding: 10px; }
@@ -47,3 +96,4 @@
   button { max-width: 200px; }
   input[type="number"] { width: 100%; max-width: 120px; }
 }
+
