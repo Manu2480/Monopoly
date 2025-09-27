@@ -1,5 +1,7 @@
+// perfil_jugador_tablero.js
 // Mostrar perfil en el cuadro
-export function renderizarPerfilJugador(jugador) {
+// Firma compatible: renderizarPerfilJugador(jugador, tableroData=null, actualizarUI=null)
+export function renderizarPerfilJugador(jugador, tableroData = null, actualizarUI = null) {
   const perfilDiv = document.getElementById("perfil-jugador");
   if (!perfilDiv) return;
 
@@ -11,8 +13,10 @@ export function renderizarPerfilJugador(jugador) {
   let propiedadesHTML = "";
   if (jugador.propiedades && jugador.propiedades.length > 0) {
     propiedadesHTML = jugador.propiedades.map(p => {
-      let detalle = `${p.nombre}`;
-      if (p.hipotecada) detalle += " 🏦 (hipotecada)";
+      // Si en tu objeto propiedad tienes 'nombre', úsalo; si no, mostramos idPropiedad
+      const nombre = p.nombre || (p.idPropiedad ? `Propiedad #${p.idPropiedad}` : "Propiedad");
+      let detalle = `${nombre}`;
+      if (p.hipotecada || p.hipotecado) detalle += " 🏦 (hipotecada)";
       if (p.casas && p.casas > 0) detalle += ` 🏠 x${p.casas}`;
       if (p.hoteles && p.hoteles > 0) detalle += ` 🏨 x${p.hoteles}`;
       return `<li>${detalle}</li>`;
@@ -26,19 +30,21 @@ export function renderizarPerfilJugador(jugador) {
     : "";
 
   perfilDiv.innerHTML = `
-    <h2>${jugador.ficha} ${jugador.nombre}</h2>
+    <h2>${jugador.ficha || ""} ${jugador.nombre || "Jugador"}</h2>
     <ul>
       <li><strong>Color:</strong> 
-        <span style="display:inline-block;width:16px;height:16px;background:${jugador.color};border-radius:50%;"></span>
+        <span style="display:inline-block;width:16px;height:16px;background:${jugador.color || "#999"};border-radius:50%;"></span>
       </li>
       <li><strong>País:</strong> ${jugador.pais?.toUpperCase() || "??"} ${bandera}</li>
-      <li><strong>Dinero:</strong> 💰 ${jugador.dinero}</li>
-      <li><strong>Deuda:</strong> ${jugador.deudaBanco > 0 ? "💸 " + jugador.deudaBanco : "✅ Sin deudas"}</li>
-      <li><strong>Posición:</strong> Casilla #${jugador.posicionActual}</li>
+      <li><strong>Dinero:</strong> 💰 ${jugador.dinero ?? 0}</li>
+      <li><strong>Posición:</strong> Casilla #${jugador.posicionActual ?? 0}</li>
     </ul>
     <h3>🏠 Propiedades</h3>
     <ul>${propiedadesHTML}</ul>
   `;
+
+  // Si te interesa más adelante añadir botones en perfil que llamen a acciones (vender/hipotecar),
+  // ahora `actualizarUI` está disponible para pasar al handler.
 }
 
 // Resetear perfil (se llama al finalizar juego)

@@ -45,21 +45,18 @@ export async function cargarTablero(tableroData) {
 //Cargar jugadores desde el local storage --> console.table(JSON.parse(localStorage.getItem("monopoly_jugadores")));
 export async function cargarJugadores() {
   try {
-    // 👇 Primero intenta leer desde LocalStorage
     const local = localStorage.getItem("monopoly_jugadores");
     if (local) {
       return JSON.parse(local);
     }
 
-    // Si no hay nada en LocalStorage, carga el JSON como fallback
-    const res = await fetch("json/jugadores.json");
-    if (!res.ok) throw new Error("No se pudo cargar json/jugadores.json");
-    return await res.json();
+    // 🚫 No cargamos fallback desde JSON. Informamos al usuario y devolvemos array vacío.
+    alert("⚠️ No hay jugadores en localStorage. Crea jugadores antes de iniciar el juego.");
+    return [];
   } catch (error) {
     console.error("❌ Error cargando jugadores:", error);
-    return [
-      { id: 1, nombre: "Jugador 1", dinero: 1500, posicionActual: 0, color: "#1D1D1D", turno: true }
-    ];
+    alert("❌ Error cargando jugadores. Revisa la consola.");
+    return [];
   }
 }
 

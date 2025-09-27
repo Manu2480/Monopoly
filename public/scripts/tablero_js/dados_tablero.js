@@ -1,8 +1,26 @@
+// dados_tablero.js
 import { moverJugador } from "./jugadores_tablero.js";
 import { mostrarResultadoDados } from "./ui_tablero.js";
-import { renderizarPerfilJugador} from "./perfil_jugador_tablero.js";
+import { renderizarPerfilJugador } from "./perfil_jugador_tablero.js";
 
-
+/**
+ * tirarDados(..., actualizarUI)
+ * - ahora recibe un parámetro adicional `actualizarUI` (función) que
+ *   será llamada después de mover para re-renderizar tablero/perfil.
+ *
+ * Firma:
+ * tirarDados(
+ *   jugadores,
+ *   indiceTurno,
+ *   tableroData,
+ *   casillasVisibles,
+ *   calcularRangoVisible,
+ *   puedeTirar,
+ *   setPuedeTirar,
+ *   setHaMovido,
+ *   actualizarUI // NUEVO
+ * )
+ */
 export function tirarDados(
   jugadores,
   indiceTurno,
@@ -11,7 +29,8 @@ export function tirarDados(
   calcularRangoVisible,
   puedeTirar,
   setPuedeTirar,
-  setHaMovido
+  setHaMovido,
+  actualizarUI // nuevo callback
 ) {
   if (!puedeTirar) {
     alert("Ya tiraste los dados.");
@@ -22,17 +41,17 @@ export function tirarDados(
   const dado2 = document.getElementById("dado2");
   if (!dado1 || !dado2) return;
 
-  const resultado1 = getCara(); // ahora devuelve 1..6 (número)
+  const resultado1 = getCara(); // 1..6
   const resultado2 = getCara();
 
-  // animar cada dado mostrando varias caras antes de la final
+  // animación de dados
   rodarDado(dado1, resultado1);
   rodarDado(dado2, resultado2);
 
   const suma = obtenerValorDado(resultado1) + obtenerValorDado(resultado2);
 
-  // Mostrar total luego de la animación (sincronizado con la duración)
-  setTimeout(() => {
+  // Después de la animación mostramos resultado y movemos
+  setTimeout(async () => {
     mostrarResultadoDados(suma);
 
     if (jugadores.length > 0) {
@@ -45,13 +64,18 @@ export function tirarDados(
         calcularRangoVisible
       );
 
-      // 👇 PERFIL: refrescar después de mover
-      renderizarPerfilJugador(jugadores[indiceTurno]);
+      // REFRESCAR UI: si recibimos callback lo usamos, si no, al menos actualizamos perfil
+      if (typeof actualizarUI === "function") {
+        await actualizarUI();
+      } else {
+        // compatibilidad: actualizar solo el perfil con la firma nueva
+        renderizarPerfilJugador(jugadores[indiceTurno], tableroData, null);
+      }
     }
 
     setHaMovido(true);
     setPuedeTirar(suma % 2 === 0);
-  }, 800); // espera a que terminen de "rodar"
+  }, 800);
 }
 
 /* ---- helpers ---- */
@@ -60,28 +84,24 @@ function getCara() {
   return Math.floor(Math.random() * 6) + 1; // 1..6
 }
 function obtenerValorDado(cara) {
-  // Si cara es número, devolvemos él mismo (compatibilidad)
   return Number(cara) || 1;
 }
 
-/* Mapa de posiciones (índices 0..8 en grid 3x3) */
 const FACE_MAP = {
   1: [4],
   2: [0, 8],
   3: [0, 4, 8],
   4: [0, 2, 6, 8],
   5: [0, 2, 4, 6, 8],
-  6: [0, 2, 3, 5, 6, 8] // columnas izquierda+derecha llenas
+  6: [0, 2, 3, 5, 6, 8]
 };
 
 function ensurePips(dadoElem) {
-  // si no hay 9 pips, los creamos
   if (dadoElem.querySelectorAll(".pip").length === 9) return;
   dadoElem.innerHTML = "";
   for (let i = 0; i < 9; i++) {
     const s = document.createElement("span");
     s.className = "pip";
-    // accesibilidad ligera
     s.setAttribute("data-pip-index", i);
     dadoElem.appendChild(s);
   }
@@ -99,7 +119,6 @@ function setDadoValue(dadoElem, value) {
 function rodarDado(dadoElem, resultadoFinal) {
   dadoElem.classList.add("rodando");
 
-  // animación: cambiar caras aleatorias cada 80-120ms
   const interval = setInterval(() => {
     const randomFace = Math.floor(Math.random() * 6) + 1;
     setDadoValue(dadoElem, randomFace);
@@ -109,19 +128,16 @@ function rodarDado(dadoElem, resultadoFinal) {
     clearInterval(interval);
     setDadoValue(dadoElem, resultadoFinal);
     dadoElem.classList.remove("rodando");
-  }, 700); // coincide con la animación CSS
+  }, 700);
 }
 
-// Inicializar pips al cargar
 window.addEventListener("DOMContentLoaded", () => {
   const dado1 = document.getElementById("dado1");
   const dado2 = document.getElementById("dado2");
   if (dado1 && dado2) {
     ensurePips(dado1);
     ensurePips(dado2);
-    // opcional: mostrarlos con valor inicial
     setDadoValue(dado1, 1);
     setDadoValue(dado2, 1);
   }
 });
-

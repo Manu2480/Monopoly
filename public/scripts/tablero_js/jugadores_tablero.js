@@ -1,32 +1,64 @@
-import { renderizarTablero } from "./tablero.js";
-import { renderizarBarraJugadores, mostrarPanelCasilla } from "./ui_tablero.js";
+// jugadores_tablero.js
+import { getJugadoresLS, updateJugador, replaceJugadores } from "./jugadores_estado.js";
 
+/**
+ * moverJugador
+ */
 export function moverJugador(idJugador, pasos, jugadores, tableroData, casillasVisibles, calcularRangoVisible) {
-  const jugador = jugadores.find(j => j.id === idJugador);
-  if (!jugador) return;
+  if (!Array.isArray(jugadores) || !tableroData?.casillas) return null;
 
-  const totalCasillas = tableroData.casillas.length || 40;
-  const posicionActual = jugador.posicionActual ?? 0;
+  const totalCasillas = tableroData.casillas.length;
+  const idxJugador = jugadores.findIndex(j => j.id === idJugador);
+  if (idxJugador === -1) return null;
 
-  jugador.posicionActual = (posicionActual + pasos) % totalCasillas;
+  const jugador = jugadores[idxJugador];
 
-  renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
-  renderizarBarraJugadores(jugadores);
-  mostrarPanelCasilla(tableroData.casillas[jugador.posicionActual], jugador, tableroData);
+  const posActual = Number.isFinite(jugador.posicionActual) ? jugador.posicionActual : 0;
+  let nuevaPos = (posActual + pasos) % totalCasillas;
+
+  // Si pasó por la salida
+  if (posActual + pasos >= totalCasillas) {
+    const salida = tableroData.casillas.find(c => c.id === 0) || tableroData.casillas[0];
+    if (salida && salida.action && typeof salida.action.money === "number") {
+      jugador.dinero = (jugador.dinero || 0) + salida.action.money;
+    }
+  }
+
+  jugador.posicionActual = nuevaPos;
+  jugadores[idxJugador] = jugador;
+
+  try {
+    replaceJugadoresIfDifferent(jugadores);
+  } catch (err) {
+    updateJugador(jugador);
+  }
+
+  return jugador;
 }
 
-export function cambiarTurno(jugadores, indiceTurno, setIndiceTurno, setPuedeTirar, setHaMovido) {
-  // Desactivar turno actual
-  jugadores[indiceTurno].turno = false;
+/**
+ * cambiarTurno
+ */
+export function cambiarTurno(jugadores, indiceActual, setIndiceCB, setPuedeTirarCB, setHaMovidoCB) {
+  if (!Array.isArray(jugadores) || typeof indiceActual !== "number") return;
 
-  // Calcular nuevo turno
-  const nuevoTurno = (indiceTurno + 1) % jugadores.length;
-  jugadores[nuevoTurno].turno = true;
+  jugadores.forEach(j => (j.turno = false));
 
-  // Actualizar estado externo
-  setIndiceTurno(nuevoTurno);
-  setPuedeTirar(true);
-  setHaMovido(false);
+  const siguiente = (indiceActual + 1) % jugadores.length;
+  if (jugadores[siguiente]) jugadores[siguiente].turno = true;
 
-  return jugadores[nuevoTurno];
+  replaceJugadoresIfDifferent(jugadores);
+
+  if (typeof setIndiceCB === "function") setIndiceCB(siguiente);
+  if (typeof setPuedeTirarCB === "function") setPuedeTirarCB(true);
+  if (typeof setHaMovidoCB === "function") setHaMovidoCB(false);
+}
+
+/* ---------- Helpers ---------- */
+function replaceJugadoresIfDifferent(jugadoresArray) {
+  const stored = getJugadoresLS();
+  const same = JSON.stringify(stored) === JSON.stringify(jugadoresArray);
+  if (!same) {
+    replaceJugadores(jugadoresArray);
+  }
 }
