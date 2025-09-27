@@ -1,5 +1,7 @@
 import { moverJugador } from "./jugadores_tablero.js";
 import { mostrarResultadoDados } from "./ui_tablero.js";
+import { renderizarPerfilJugador} from "./perfil_jugador_tablero.js";
+
 
 export function tirarDados(
   jugadores,
@@ -42,6 +44,9 @@ export function tirarDados(
         casillasVisibles,
         calcularRangoVisible
       );
+
+      // 👇 PERFIL: refrescar después de mover
+      renderizarPerfilJugador(jugadores[indiceTurno]);
     }
 
     setHaMovido(true);

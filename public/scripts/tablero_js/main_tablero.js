@@ -121,6 +121,7 @@ window.onload = async () => {
         haMovido = true;
       }
       input.value = "";
+      renderizarPerfilJugador(jugadores[indiceTurno]); // 👈 PERFIL
     });
 
     // ⏭️ Cambiar turno
