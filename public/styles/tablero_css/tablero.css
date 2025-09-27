@@ -42,6 +42,7 @@
   .tablero-linear { grid-template-columns: repeat(4, 1fr); }
 }
 
+
 /* Casillas */
 .casilla {
   border: 3px solid var(--negro);
@@ -90,6 +91,12 @@
 .casilla.parking { border: 3px solid var(--azul); }
 .casilla.impuesto { border: 3px solid var(--rojo); }
 .casilla.ferrocarril { border: 3px solid var(--azul); }
+
+/* Mostrar hipoteca más notoria */
+.casilla.hipotecada {
+  filter: grayscale(80%);
+  opacity: 0.95;
+}
 
 /* Contenedor de jugadores dentro de casilla */
 .casilla .jugadores-container {

@@ -1,12 +1,22 @@
-// jugadores_estado.js
-const LS_KEY = "monopoly_jugadores"; // <- igual que api_tablero.cargarJugadores
+
+// Usar una única clave consistente para todo el proyecto:
+const LS_KEY = "monopoly_jugadores";
 
 export function getJugadoresLS() {
-  return JSON.parse(localStorage.getItem(LS_KEY)) || [];
+  try {
+    return JSON.parse(localStorage.getItem(LS_KEY)) || [];
+  } catch (e) {
+    console.error("Error parseando jugadores en LS:", e);
+    return [];
+  }
 }
 
 export function setJugadoresLS(jugadores) {
-  localStorage.setItem(LS_KEY, JSON.stringify(jugadores));
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(jugadores));
+  } catch (e) {
+    console.error("Error guardando jugadores en LS:", e);
+  }
 }
 
 export function findJugadorById(id) {
@@ -20,14 +30,13 @@ export function updateJugador(jugador) {
   if (idx >= 0) {
     js[idx] = jugador;
     setJugadoresLS(js);
+    return true;
   } else {
-    // si no existe, lo añadimos al final para evitar pérdida de datos
-    js.push(jugador);
-    setJugadoresLS(js);
+    console.warn("updateJugador: jugador no encontrado", jugador.id);
+    return false;
   }
 }
 
 export function replaceJugadores(jugadores) {
   setJugadoresLS(jugadores);
 }
-

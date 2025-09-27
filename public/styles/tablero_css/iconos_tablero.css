@@ -27,3 +27,45 @@ button i {
 button:hover i {
   color: #f1c40f !important; /* forzamos prioridad */
 }
+
+.accion-btn {
+  background: linear-gradient(90deg, var(--verde), var(--azul));
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .12s ease;
+}
+.accion-btn:disabled {
+  background: linear-gradient(90deg,#aaa,#888);
+  color: #444;
+  cursor: not-allowed;
+  opacity: 0.9;
+}
+
+.accion-icono {
+  background: linear-gradient(90deg, var(--verde), var(--azul));
+  border: none;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  cursor: pointer;
+  padding: 6px;
+}
+.accion-icono svg { fill: white; width: 20px; height: 20px; }
+.accion-icono:disabled { background: linear-gradient(90deg,#aaa,#888); cursor:not-allowed; }
+.acciones-grid { max-width: 320px; }
+.icon-row { gap: 8px; display:flex; flex-wrap:wrap; }
+
+
+.perfil-ico { display:inline-flex; align-items:center; gap:6px; }
+.perfil-ico svg { width:16px; height:16px; fill: #1d6f63; } /* ajusta color */
+.perfil-ico-mortgage svg { fill:#a00; } /* hipoteca en rojo */
+.perfil-ico-house svg { fill:#f39c12; }  /* casa color */
+.perfil-ico-hotel svg { fill:#0066cc; }  /* hotel color */
+
