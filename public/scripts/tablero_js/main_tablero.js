@@ -3,13 +3,13 @@ import { cargarTablero, cargarJugadores } from "./api_tablero.js";
 import { renderizarTablero } from "./tablero.js";
 import { renderizarBarraJugadores } from "./ui_tablero.js";
 import { tirarDados } from "./dados_tablero.js";
-import { pedirPrestamo } from "./banco_tablero.js";
-import { verPerfil, cambiarTurno, moverJugador } from "./jugadores_tablero.js";
+import { renderizarPerfilJugador, resetPerfilJugador } from "./perfil_jugador_tablero.js";
+import { cambiarTurno, moverJugador } from "./jugadores_tablero.js";
 import { determinarCasillasVisibles, calcularRangoVisible } from "./utils_tablero.js";
 
 // ======================== VARIABLES GLOBALES ========================
 let tableroData = { casillas: [], community_chest: [], chance: [] };
-let jugadores = []; // ahora se cargarán siempre desde cargarJugadores()
+let jugadores = [];
 let indiceTurno = 0;
 let puedeTirar = true;
 let haMovido = false;
@@ -22,8 +22,6 @@ function setEstadoBotones(estado) {
   const botones = [
     document.getElementById("btn-dados"),
     document.getElementById("btn-mover"),
-    document.getElementById("btn-prestamo"),
-    document.getElementById("btn-perfil"),
     document.getElementById("btn-turno"),
   ];
 
@@ -59,6 +57,7 @@ function iniciarJuego() {
 
   renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
   renderizarBarraJugadores(jugadores);
+  renderizarPerfilJugador(jugadores[indiceTurno]); // 👈 PERFIL
 
   setEstadoBotones("jugando");
 }
@@ -69,6 +68,7 @@ function finalizarJuego() {
 
   renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
   renderizarBarraJugadores(jugadores);
+  resetPerfilJugador(); // 👈 limpiar perfil
 
   setEstadoBotones("finalizado");
 }
@@ -76,20 +76,14 @@ function finalizarJuego() {
 // ======================== INIT ========================
 window.onload = async () => {
   try {
-    // Cargar tablero
     await cargarTablero(tableroData);
-
-    // 👇 Cargar jugadores (LocalStorage primero, JSON solo si no hay nada)
     jugadores = await cargarJugadores();
 
     casillasVisibles = determinarCasillasVisibles();
     renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
     renderizarBarraJugadores(jugadores);
 
-    // Estado inicial: solo se puede iniciar juego
     setEstadoBotones("no-iniciado");
-
-    // ======================== EVENTOS ========================
 
     // ▶️ Iniciar / Finalizar Juego
     document.getElementById("btn-inicio").addEventListener("click", () => {
@@ -128,16 +122,6 @@ window.onload = async () => {
       input.value = "";
     });
 
-    // 💵 Pedir préstamo
-    document.getElementById("btn-prestamo").addEventListener("click", () =>
-      pedirPrestamo(jugadores, indiceTurno)
-    );
-
-    // 👤 Ver perfil
-    document.getElementById("btn-perfil").addEventListener("click", () =>
-      verPerfil(jugadores, indiceTurno)
-    );
-
     // ⏭️ Cambiar turno
     document.getElementById("btn-turno").addEventListener("click", () => {
       if (!haMovido) {
@@ -155,9 +139,9 @@ window.onload = async () => {
 
       renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
       renderizarBarraJugadores(jugadores);
+      renderizarPerfilJugador(jugadores[indiceTurno]); // 👈 PERFIL
     });
 
-    // 📱 Responsive: recalcular tablero al cambiar tamaño
     window.addEventListener("resize", () => {
       casillasVisibles = determinarCasillasVisibles();
       renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);

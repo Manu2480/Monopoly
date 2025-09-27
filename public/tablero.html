@@ -31,6 +31,7 @@
 
     <!-- Controles principales -->
     <div class="controles-centro">
+
       <!-- 📦 Casilla dinámica -->
       <div class="contenedor-cartas">
         <h3>📦 Casilla actual</h3>
@@ -51,24 +52,18 @@
         <button id="btn-mover">➡️ Mover</button>
       </div>
 
-      <!-- 🏦 Banco -->
-      <div class="contenedor-cartas">
-        <h3>🏦 Banco</h3>
-        <div class="mazo">💰</div>
-        <input id="monto-prestamo" type="number" min="1" placeholder="Monto"
-          style="width:120px; padding:6px; border-radius:8px; border:2px solid var(--azul); text-align:center; margin-top:10px;">
-        <button id="btn-prestamo">💵 Pedir préstamo</button>
+      <!-- 👤 Perfil del jugador (reemplaza banco) -->
+      <div id="contenedor-perfil" class="contenedor-cartas">
+        <h3>👤 Perfil</h3>
+        <div id="perfil-jugador" class="perfil-box"></div>
       </div>
-    </div>
 
-    <!-- Perfil del jugador -->
-    <div id="perfil-jugador" class="perfil-jugador" style="display:none;"></div>
+    </div>
 
     <!-- Controles de navegación -->
     <div class="controles-navegacion">
       <button id="btn-inicio">▶️ Iniciar Juego</button>
       <button id="btn-turno">⏭️ Siguiente Turno</button>
-      <button id="btn-perfil">👤 Ver Perfil</button>
     </div>
 
   </div>
