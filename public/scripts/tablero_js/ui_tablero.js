@@ -1,5 +1,10 @@
-import { voltearCarta } from "./cartas_tablero.js";
+// ui_tablero.js
+// Ahora delegamos el render de acciones a ui_acciones.mostrarAccionesCasillaDOM
+import { renderPanelCasilla, mostrarAccionesCasillaDOM } from "./ui_acciones.js";
 
+/**
+ * Añade la ficha visual del jugador dentro de la casilla DOM
+ */
 export function agregarJugadorACasilla(casillaElem, jugador, esActual) {
   let contenedor = casillaElem.querySelector(".jugadores-container");
   if (!contenedor) {
@@ -18,6 +23,9 @@ export function agregarJugadorACasilla(casillaElem, jugador, esActual) {
   contenedor.appendChild(ficha);
 }
 
+/**
+ * Renderiza la barra lateral de jugadores
+ */
 export function renderizarBarraJugadores(jugadores) {
   const barra = document.getElementById("lista-jugadores");
   if (!barra) return;
@@ -29,7 +37,6 @@ export function renderizarBarraJugadores(jugadores) {
     span.classList.add("jugador-barra");
     span.style.color = j.color;
 
-    // Clases activo/inactivo
     if (j.turno) {
       span.classList.add("activo");
       span.classList.remove("inactivo");
@@ -42,45 +49,48 @@ export function renderizarBarraJugadores(jugadores) {
   }
 }
 
-export function mostrarPanelCasilla(casilla, jugador, tableroData) {
+/**
+ * mostrarPanelCasilla
+ * - Ahora delega por completo la creación de botones a mostrarAccionesCasillaDOM.
+ *
+ * Firma nueva (compatible hacia atrás):
+ * mostrarPanelCasilla(casilla, jugador, jugadores = [jugador], tableroData = {}, callbacks = {})
+ *
+ * callbacks (opcional): { actualizarUI, bloquearPasarTurno, habilitarPasarTurno }
+ */
+export function mostrarPanelCasilla(casilla, jugador, jugadores = null, tableroData = {}, callbacks = {}) {
   const panel = document.getElementById("panel-casilla");
   const acciones = document.getElementById("acciones-casilla");
   if (!panel || !acciones) return;
 
+  // Limpiar acciones (las vamos a volver a delegar)
   acciones.innerHTML = "";
+
+  // Render de la tarjeta informativa en el panel
   if (!casilla) {
     panel.textContent = "⬜";
-    return;
+  } else {
+    // reutilizamos renderPanelCasilla de ui_acciones para mostrar la info
+    renderPanelCasilla(casilla);
   }
 
-  // Cambio de if/else if por switch
-  switch (casilla.type) {
-    case "property":
-    case "railroad": {
-      panel.textContent = `🏠 ${casilla.name}`;
-      const btn = document.createElement("button");
-      btn.textContent = "Comprar";
-      btn.onclick = () => alert(`${jugador.nombre} compró ${casilla.name}`);
-      acciones.appendChild(btn);
-      break;
-    }
+  // Normalizar jugadores: si no recibieron array, usamos sólo el jugador actual para evitar fallos
+  const jugadoresArr = Array.isArray(jugadores) ? jugadores : (jugador ? [jugador] : []);
 
-    case "chance":
-    case "community_chest": {
-      panel.textContent = casilla.type === "chance" ? "❓ Suerte" : "🎁 Comunidad";
-      const btn = document.createElement("button");
-      btn.textContent = "Voltear carta";
-      btn.onclick = () => voltearCarta(casilla.type, tableroData);
-      acciones.appendChild(btn);
-      break;
-    }
-
-    default:
-      panel.textContent = `ℹ️ ${casilla.name}`;
-      break;
-  }
+  // Delegar la construcción de los botones/acciones al módulo ui_acciones
+  // mostrarAccionesCasillaDOM rellenará #acciones-casilla con los botones pertinentes
+  mostrarAccionesCasillaDOM(
+    jugador || (jugadoresArr.length ? jugadoresArr[0] : null),
+    casilla,
+    jugadoresArr,
+    tableroData || {},
+    callbacks
+  );
 }
 
+/**
+ * Mostrar el popup con el resultado de los dados
+ */
 export function mostrarResultadoDados(suma) {
   const resultado = document.createElement("div");
   resultado.textContent = `Total: ${suma}`;
@@ -102,6 +112,9 @@ export function mostrarResultadoDados(suma) {
   setTimeout(() => resultado.remove(), 2000);
 }
 
+/**
+ * Pequeña animación al renderizar casillas
+ */
 export function agregarEfectosVisuales() {
   const casillas = document.querySelectorAll(".casilla");
 

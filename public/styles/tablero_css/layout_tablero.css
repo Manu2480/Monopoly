@@ -9,10 +9,11 @@
 /* Info */
 .info-posicion {
   text-align: center;
-  background: rgba(255,255,255,0.9);
+  background: linear-gradient(90deg, var(--verde), var(--azul));
   padding: 10px 20px;
   border-radius: 15px;
   font-weight: bold;
   font-family: 'Montserrat', sans-serif;
-  color: var(--negro);
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }

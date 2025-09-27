@@ -1,46 +1,74 @@
 /* Dados */
 .dados {
   display: flex;
-  gap: 15px;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 .dado {
-  font-size: 34px;
-  border: 3px solid var(--negro);
-  border-radius: 12px;
-  padding: 18px;
-  background: white;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-  min-width: 70px;
-  min-height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s;
+  width: 70px;
+  height: 70px;
+  border: 3px solid var(--azul);
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--verde), var(--amarillo));
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s, box-shadow 0.25s;
 }
 
-/* 🎲 Animación de rodar */
+/* Hover / foco */
+.dado:hover,
+.dado:focus {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.22);
+}
+
+/* Pips (puntos) */
+.dado .pip {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: transparent;       /* por defecto transparente */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2) inset;
+  transition: background 0.12s, transform 0.12s;
+  transform: scale(1);
+}
+
+/* Pip activo = negro (punto visible) */
+.dado .pip.active {
+  background: var(--negro);
+  transform: scale(1.05);
+}
+
+/* Animación de "rodar" (rota ligeramente) */
 @keyframes rodar {
   0%   { transform: rotate(0deg) scale(1); }
-  50%  { transform: rotate(180deg) scale(1.2); }
+  50%  { transform: rotate(180deg) scale(1.06); }
   100% { transform: rotate(360deg) scale(1); }
 }
-
 .dado.rodando {
   animation: rodar 0.7s ease;
 }
 
-/* Resultado de dados (popup) */
+/* Resultado popup (si lo usas) */
 .resultado-dados {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  background: linear-gradient(135deg, var(--azul), var(--verde));
   color: white;
-  padding: 10px 20px;
+  padding: 10px 18px;
   border-radius: 20px;
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 700;
   z-index: 1000;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
 }

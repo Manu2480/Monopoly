@@ -392,3 +392,9 @@ select option {
 .ficha-casa::before {
   content: "\f015"; /* fa-house */
 }
+.titulo-ficha {
+  font-weight: bold;
+  margin-bottom: 15px; /* 🔹 separa el texto de los botones */
+  text-align: center;
+  font-size: 1.1rem;
+}

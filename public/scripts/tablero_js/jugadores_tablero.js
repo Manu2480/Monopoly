@@ -1,46 +1,64 @@
-import { renderizarTablero } from "./tablero.js";
-import { renderizarBarraJugadores, mostrarPanelCasilla } from "./ui_tablero.js";
+// jugadores_tablero.js
+import { getJugadoresLS, updateJugador, replaceJugadores } from "./jugadores_estado.js";
 
+/**
+ * moverJugador
+ */
 export function moverJugador(idJugador, pasos, jugadores, tableroData, casillasVisibles, calcularRangoVisible) {
-  const jugador = jugadores.find(j => j.id === idJugador);
-  if (!jugador) return;
+  if (!Array.isArray(jugadores) || !tableroData?.casillas) return null;
 
-  const totalCasillas = tableroData.casillas.length || 40;
-  const posicionActual = jugador.posicionActual ?? 0;
+  const totalCasillas = tableroData.casillas.length;
+  const idxJugador = jugadores.findIndex(j => j.id === idJugador);
+  if (idxJugador === -1) return null;
 
-  jugador.posicionActual = (posicionActual + pasos) % totalCasillas;
+  const jugador = jugadores[idxJugador];
 
-  renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
-  renderizarBarraJugadores(jugadores);
-  mostrarPanelCasilla(tableroData.casillas[jugador.posicionActual], jugador, tableroData);
-}
+  const posActual = Number.isFinite(jugador.posicionActual) ? jugador.posicionActual : 0;
+  let nuevaPos = (posActual + pasos) % totalCasillas;
 
-export function cambiarTurno(jugadores, indiceTurno, setIndiceTurno, setPuedeTirar, setHaMovido) {
-  // Desactivar turno actual
-  jugadores[indiceTurno].turno = false;
-
-  // Calcular nuevo turno
-  const nuevoTurno = (indiceTurno + 1) % jugadores.length;
-  jugadores[nuevoTurno].turno = true;
-
-  // Actualizar estado externo
-  setIndiceTurno(nuevoTurno);
-  setPuedeTirar(true);
-  setHaMovido(false);
-
-  return jugadores[nuevoTurno];
-}
-
-export function verPerfil(jugadores, indiceTurno) {
-  const jugador = jugadores[indiceTurno];
-  if (!jugador) {
-    alert("No hay jugador en turno.");
-    return;
+  // Si pasó por la salida
+  if (posActual + pasos >= totalCasillas) {
+    const salida = tableroData.casillas.find(c => c.id === 0) || tableroData.casillas[0];
+    if (salida && salida.action && typeof salida.action.money === "number") {
+      jugador.dinero = (jugador.dinero || 0) + salida.action.money;
+    }
   }
 
-  alert(`
-👤 ${jugador.nombre}
-💰 Dinero: ${jugador.dinero}
-📍 Casilla: ${jugador.posicionActual}
-  `);
+  jugador.posicionActual = nuevaPos;
+  jugadores[idxJugador] = jugador;
+
+  try {
+    replaceJugadoresIfDifferent(jugadores);
+  } catch (err) {
+    updateJugador(jugador);
+  }
+
+  return jugador;
+}
+
+/**
+ * cambiarTurno
+ */
+export function cambiarTurno(jugadores, indiceActual, setIndiceCB, setPuedeTirarCB, setHaMovidoCB) {
+  if (!Array.isArray(jugadores) || typeof indiceActual !== "number") return;
+
+  jugadores.forEach(j => (j.turno = false));
+
+  const siguiente = (indiceActual + 1) % jugadores.length;
+  if (jugadores[siguiente]) jugadores[siguiente].turno = true;
+
+  replaceJugadoresIfDifferent(jugadores);
+
+  if (typeof setIndiceCB === "function") setIndiceCB(siguiente);
+  if (typeof setPuedeTirarCB === "function") setPuedeTirarCB(true);
+  if (typeof setHaMovidoCB === "function") setHaMovidoCB(false);
+}
+
+/* ---------- Helpers ---------- */
+function replaceJugadoresIfDifferent(jugadoresArray) {
+  const stored = getJugadoresLS();
+  const same = JSON.stringify(stored) === JSON.stringify(jugadoresArray);
+  if (!same) {
+    replaceJugadores(jugadoresArray);
+  }
 }

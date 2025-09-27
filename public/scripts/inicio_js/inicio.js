@@ -215,19 +215,6 @@
       if (jugadoresGuardados) jugadores = JSON.parse(jugadoresGuardados);
       renderTabla();
     }
-
-
-
-    // ===================== SELECCIÓN FICHAS =====================
-    // ===================== SELECCIÓN FICHAS =====================
-    fichas.forEach(btn => {
-      btn.addEventListener("click", () => {
-        fichas.forEach(f => f.classList.remove("active"));
-        btn.classList.add("active");
-        fichaSeleccionada = btn.dataset.ficha;  // ✅ usamos el atributo en vez de textContent
-        limpiarError(btn);
-      });
-    });
     const iconMap = {
       sombrero: "hat-cowboy",
       elefante: "elephant",
@@ -237,6 +224,15 @@
       casa: "house"
     };
 
+    // ===================== SELECCIÓN FICHAS =====================
+    fichas.forEach(btn => {
+      btn.addEventListener("click", () => {
+        fichas.forEach(f => f.classList.remove("active"));
+        btn.classList.add("active");
+        fichaSeleccionada = btn.dataset.ficha;  // ✅ usamos el atributo en vez de textContent
+        limpiarError(btn);
+      });
+    });
 
 
     // ===================== SELECCIÓN COLORES =====================
