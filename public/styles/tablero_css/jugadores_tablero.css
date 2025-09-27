@@ -1,32 +1,52 @@
-/* Estilos de los jugadores en la barra */
-.jugador-barra {
-  font-family: 'Luckiest Guy', cursive;
-  font-size: 18px;
-  transition: all 0.3s ease;
-  padding: 4px 10px;
-  border-radius: 10px;
-  text-shadow:
-    -1px -1px 0 #000,
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000;
-}
-.jugador-barra.activo {
-  font-size: 22px;
-  font-weight: bold;
-  color: inherit;
-  animation: brillo 1s infinite alternate;
-}
-.jugador-barra.inactivo {
-  color: #888 !important;
-  filter: grayscale(1);
-}
-@keyframes brillo {
-  from { text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 5px rgba(255,255,255,0.4); }
-  to   { text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 20px rgba(255,255,255,0.9); }
+/* ================= BARRA DE JUGADORES ================= */
+
+/* Contenedor de la lista de jugadores */
+.jugadores-barra {
+  display: flex;
+  flex-wrap: wrap;          /* si no caben, bajan a otra línea */
+  justify-content: center;  /* centrados */
+  gap: 12px;                /* espacio entre jugadores */
+  margin-top: 10px;         /* separación con el título "Jugadores" */
 }
 
-/* Jugadores en casillas */
+/* Estilos de cada jugador en la barra */
+.jugador-barra {
+  display: inline-flex;     /* icono + nombre en fila */
+  align-items: center;
+  white-space: nowrap;      /* evita salto entre icono y nombre */
+  gap: 6px;                 /* espacio entre icono y nombre */
+
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 18px;
+  padding: 6px 12px;
+  border-radius: 8px;
+
+  background: linear-gradient(90deg, var(--verde), var(--amarillo));
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.4);  /* sombra suave */
+  transition: all 0.3s ease;
+}
+
+.jugador-barra.activo {
+  font-size: 20px;
+  font-weight: bold;
+  background: linear-gradient(90deg, var(--azul), var(--verde));
+  box-shadow: 0 0 10px rgba(0,0,0,0.25);
+  animation: brillo 1s infinite alternate;
+}
+
+.jugador-barra.inactivo {
+  background: #ccc;
+  color: #555 !important;
+  filter: grayscale(1);
+}
+
+@keyframes brillo {
+  from { box-shadow: 0 0 8px rgba(255,255,255,0.4); }
+  to   { box-shadow: 0 0 16px rgba(255,255,255,0.9); }
+}
+
+/* ================= JUGADORES EN EL TABLERO ================= */
 .jugador {
   width: 28px;
   height: 28px;
@@ -42,6 +62,16 @@
   border: 2px solid white;
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
+
 .jugador.ring-2 {
-  box-shadow: 0 0 0 4px rgba(255,209,102,0.3), 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 0 0 4px rgba(0,180,102,0.3),
+              0 4px 12px rgba(0,0,0,0.25);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 600px) {
+  .jugador-barra {
+    font-size: 14px;
+    padding: 4px 8px;
+  }
 }

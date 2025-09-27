@@ -8,6 +8,7 @@
 @import url('iconos_tablero.css');
 @import url('perfil_tablero.css');
 
+
 /* ================= ANIMACIONES ================= */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }

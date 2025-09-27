@@ -148,8 +148,6 @@ window.onload = async () => {
       casillasVisibles = determinarCasillasVisibles();
       renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
     });
-    // Inicializar Lucide para renderizar los íconos
-    lucide.createIcons();
   } catch (err) {
     console.error("❌ Error iniciando el juego:", err);
   }
