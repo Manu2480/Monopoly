@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="styles/inicio_css/inicio.css">
   <script type="module" src="scripts/inicio_js/inicio.js"></script>
 
+  <!-- ICONOS - CDN Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -15,18 +17,19 @@
 
     <!-- ENCABEZADO -->
     <header class="header">
-      <h1>🏠 MONOPOLY 🏠</h1>
+      <h1><i class="fa-solid fa-house"></i> MONOPOLY <i class="fa-solid fa-house"></i></h1>
       <p>Configura a tus jugadores antes de iniciar la partida</p>
     </header>
 
     <!-- ALERTA -->
     <div class="alerta">
-      🔔 Debes tener <strong>mínimo 2</strong> jugadores y <strong>máximo 4</strong> para iniciar.
+      <i class="fa-solid fa-bell"></i> Debes tener <strong>mínimo 2</strong> jugadores y <strong>máximo 4</strong> para
+      iniciar.
     </div>
 
     <!-- FORMULARIO -->
     <section class="card">
-      <h2>➕ Agregar Jugador</h2>
+      <h2><i class="fa-solid fa-user-plus"></i> Agregar Jugador</h2>
 
       <label for="nombre">Nombre del jugador</label>
       <input type="text" id="nombre" placeholder="Ingresa tu nombre">
@@ -40,17 +43,14 @@
         <div id="countryError" class="error"></div>
       </div>
 
-
-
-      <label>Elige tu ficha</label>
       <div class="opciones">
-        <button type="button" class="ficha">🎩</button>
-        <button type="button" class="ficha">🐘</button>
-        <button type="button" class="ficha">⛵</button>
-        <button type="button" class="ficha">✈️</button>
-        <button type="button" class="ficha">🎸</button>
-        <button type="button" class="ficha">🏠</button>
+        <button class="ficha" data-ficha="sombrero"><i class="fa-solid fa-hat-cowboy"></i></button>
+        <button class="ficha" data-ficha="avion"><i class="fa-solid fa-plane"></i></button>
+        <button class="ficha" data-ficha="guitarra"><i class="fa-solid fa-guitar"></i></button>
+        <button class="ficha" data-ficha="barco"><i class="fa-solid fa-sailboat"></i></button>
+        <button class="ficha" data-ficha="casa"><i class="fa-solid fa-house"></i></button>
       </div>
+
 
       <label>Elige tu color</label>
       <div class="opciones">
@@ -61,28 +61,31 @@
         <button type="button" class="color blue"></button>
       </div>
 
-      <button id="agregar" class="btn">Agregar Jugador</button>
+      <button id="agregar" class="btn"><i class="fa-solid fa-plus"></i> Agregar Jugador</button>
     </section>
 
     <!-- TABLA -->
-    <section class="card">
-      <h2>📋 Lista de Jugadores</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>País</th>
-            <th>Nombre</th>
-            <th>Ficha</th>
-            <th>Color</th>
-          </tr>
-        </thead>
-        <tbody id="tabla-jugadores"></tbody>
-      </table>
+    <section class="card tabla-container">
+      <h2><i class="fa-solid fa-list"></i> Lista de Jugadores</h2>
+      <div class="tabla-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>País</th>
+              <th>Nombre</th>
+              <th>Ficha</th>
+              <th>Color</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-jugadores"></tbody>
+        </table>
+      </div>
     </section>
 
     <!-- BOTÓN INICIAR -->
     <div class="acciones">
-      <button class="btnIniciar">🚀 Iniciar Juego</button>
+      <button class="btnIniciar"><i class="fa-solid fa-rocket"></i> Iniciar Juego</button>
     </div>
 
     <div class="mostrarError"></div>
