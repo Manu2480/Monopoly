@@ -1,11 +1,11 @@
-// dados_tablero.js (versión mejorada con lógica de cárcel)
+// dados_tablero.js (versión corregida)
 import { moverJugador } from "./jugadores_tablero.js";
 import { mostrarResultadoDados } from "./ui_tablero.js";
 import { renderizarPerfilJugador } from "./perfil_jugador_tablero.js";
 import { getJugadoresLS, replaceJugadores } from "./jugadores_estado.js";
 
 /**
- * tirarDados con lógica completa de cárcel
+ * tirarDados con lógica completa de cárcel - CORREGIDO
  */
 export function tirarDados(
   jugadores,
@@ -73,6 +73,9 @@ export function tirarDados(
           calcularRangoVisible
         );
         
+        // *** FIX: Marcar como movido ***
+        setHaMovido(true);
+        
         // Puede tirar otra vez por sacar dobles
         setPuedeTirar(true);
         
@@ -96,6 +99,9 @@ export function tirarDados(
               casillasVisibles,
               calcularRangoVisible
             );
+
+            // *** FIX: Marcar como movido ***
+            setHaMovido(true);
           } else {
             // No tiene dinero - queda en deuda
             const faltante = 50 - jugadorActual.dinero;
@@ -115,6 +121,9 @@ export function tirarDados(
               casillasVisibles,
               calcularRangoVisible
             );
+
+            // *** FIX: Marcar como movido ***
+            setHaMovido(true);
           }
         } else {
           // Primer o segundo intento fallido - pierde el turno
@@ -123,6 +132,9 @@ export function tirarDados(
           
           // NO se mueve, pierde el turno
           setPuedeTirar(false);
+
+          // *** FIX: En cárcel sin movimiento, aún cuenta como "turno usado" ***
+          setHaMovido(true);
           
           // *** IMPORTANTE: NO llamar a moverJugador aquí ***
           // El jugador pierde el turno y se queda en la misma posición
@@ -150,6 +162,9 @@ export function tirarDados(
         casillasVisibles,
         calcularRangoVisible
       );
+
+      // *** FIX: Marcar como movido después del movimiento normal ***
+      setHaMovido(true);
 
       // 👀 Si sacó dobles en juego normal, puede tirar otra vez
       setPuedeTirar(esDoble);
