@@ -6,6 +6,7 @@ import { obtenerCarta, voltearCartaEnPanel, resetPanelCarta } from "./cartas_tab
 
 /**
  * Estado global del mazo abierto: evita voltear múltiples cartas a la vez.
+ * Ahora se reinicia automáticamente al cambiar de casilla/jugador.
  */
 let mazoAbierto = false;
 
@@ -184,6 +185,12 @@ export function handlePlayerInJail(jugador, casilla, cont, callbacks) {
 export function handleCards(jugador, casilla, cont, callbacks, tableroData) {
   const tipoMazo = casilla.type;
   
+  // Si ya hay una carta abierta para este jugador específico, no mostrar el botón
+  if (mazoAbierto && jugador.accionResuelta === false) {
+    callbacks.bloquearPasarTurno && callbacks.bloquearPasarTurno();
+    return; // La carta ya está visible, no agregar más botones
+  }
+  
   const voltearBtn = document.createElement("button");
   voltearBtn.className = "accion-btn";
   voltearBtn.textContent = "Voltear carta";
@@ -196,80 +203,72 @@ export function handleCards(jugador, casilla, cont, callbacks, tableroData) {
     const carta = obtenerCarta(tipoMazo, tableroData);
     if (!carta) { 
       alert("No hay cartas en el mazo."); 
+      // Marcar como resuelta aunque no haya carta
+      marcarAccionResuelta(jugador);
+      callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
       return; 
     }
 
     mazoAbierto = true;
     callbacks.bloquearPasarTurno && callbacks.bloquearPasarTurno();
     voltearCartaEnPanel(carta);
-    cont.innerHTML = "";
+    cont.innerHTML = ""; // Limpiar el botón voltear
 
     if (carta.action && typeof carta.action.money === "number") {
       const monto = carta.action.money;
-      const texto = monto < 0 ? `Pagar $${Math.abs(monto)}` : `Recibir $${Math.abs(monto)}`;
+      const texto = monto < 0 ? `Pagar ${Math.abs(monto)}` : `Recibir ${Math.abs(monto)}`;
 
       const aplicarBtn = document.createElement("button");
       aplicarBtn.className = "accion-btn";
       aplicarBtn.textContent = texto;
       
       aplicarBtn.addEventListener("click", () => {
+        aplicarBtn.disabled = true; // Evitar clicks múltiples
+        
         if (monto < 0) {
+          // Pagar dinero
           const res = ACC.intentarPagar(jugador.id, Math.abs(monto));
           if (res.ok) {
-            callbacks.actualizarUI && callbacks.actualizarUI();
-            callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
-            alert(`Has pagado $${Math.abs(monto)}.`);
-            mazoAbierto = false;
-            resetPanelCarta();
-            cont.innerHTML = "";
+            marcarAccionResuelta(jugador);
+            finalizarCarta(callbacks, cont);
+            alert(`Has pagado ${Math.abs(monto)}.`);
           } else {
             if (res.reason === "insuficiente") {
               alert("No tienes suficiente dinero. Vende o hipoteca propiedades.");
-              callbacks.bloquearPasarTurno && callbacks.bloquearPasarTurno();
+              aplicarBtn.disabled = false; // Re-habilitar para reintentar
               callbacks.actualizarUI && callbacks.actualizarUI();
             } else {
               alert("Error al pagar: " + res.reason);
-              mazoAbierto = false;
-              resetPanelCarta();
-              callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
-              cont.innerHTML = "";
+              finalizarCarta(callbacks, cont);
             }
           }
         } else {
+          // Recibir dinero
           const js = getJugadoresLS();
           const j = js.find(x => x.id === jugador.id);
           if (j) {
             j.dinero = (Number(j.dinero) || 0) + Number(monto);
             replaceJugadores(js);
             marcarAccionResuelta(jugador);
-            callbacks.actualizarUI && callbacks.actualizarUI();
-            callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
-            alert(`Has recibido $${monto}.`);
-            mazoAbierto = false;
-            resetPanelCarta();
-            cont.innerHTML = "";
+            finalizarCarta(callbacks, cont);
+            alert(`Has recibido ${monto}.`);
           } else {
             alert("Error interno: jugador no encontrado.");
-            mazoAbierto = false;
-            resetPanelCarta();
-            callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
-            cont.innerHTML = "";
+            finalizarCarta(callbacks, cont);
           }
         }
       });
       
       cont.appendChild(aplicarBtn);
     } else {
+      // Carta sin acción monetaria - solo informativa
       const aceptar = document.createElement("button");
       aceptar.className = "accion-btn";
       aceptar.textContent = "Aceptar";
       
       aceptar.addEventListener("click", () => {
         marcarAccionResuelta(jugador);
-        mazoAbierto = false;
-        cont.innerHTML = "";
-        resetPanelCarta();
-        callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
+        finalizarCarta(callbacks, cont);
       });
       
       cont.appendChild(aceptar);
@@ -278,6 +277,17 @@ export function handleCards(jugador, casilla, cont, callbacks, tableroData) {
   
   cont.appendChild(voltearBtn);
   if (mazoAbierto) callbacks.bloquearPasarTurno && callbacks.bloquearPasarTurno();
+}
+
+/**
+ * Función helper para finalizar el manejo de cartas
+ */
+function finalizarCarta(callbacks, cont) {
+  mazoAbierto = false;
+  cont.innerHTML = "";
+  resetPanelCarta();
+  callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
+  callbacks.actualizarUI && callbacks.actualizarUI();
 }
 
 /**

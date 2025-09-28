@@ -11,6 +11,8 @@ import { resetPanelCarta } from "./cartas_tablero.js";
 import { mostrarAccionesCasillaDOM, clearAccionesCasilla, renderPanelCasilla, tienePendientes} from "./ui_acciones.js";
 import { renderizarPerfilJugador, resetPerfilJugador } from "./perfil_jugador_tablero.js";
 
+import * as ControlCasillas from "./ui_acciones.js"; // Importa todo el módulo
+
 // ======================== VARIABLES GLOBALES ========================
 let tableroData = { casillas: [], community_chest: [], chance: [] };
 let jugadores = [];
@@ -250,10 +252,21 @@ window.onload = async () => {
         v => (haMovido = v)
       );
 
+      // 🔄 ACTUALIZAR INMEDIATAMENTE después del cambio de turno
+      // Recargar jugadores desde localStorage para asegurar sincronización
+      jugadores = await cargarJugadores();
+      
+      // Actualizar todas las partes de la UI inmediatamente
       renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
       renderizarBarraJugadores(jugadores);
+      
+      // Renderizar perfil del NUEVO jugador actual (ahora indiceTurno ya cambió)
       renderizarPerfilJugador(jugadores[indiceTurno], tableroData, actualizarUICompleta);
+      
+      resetMazoState();
       resetPanelCarta();
+      
+      // Mostrar acciones de la casilla del nuevo jugador
       mostrarAccionesCasillaParaJugadorActual();
     });
 

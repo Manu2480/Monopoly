@@ -1,10 +1,10 @@
 // ui_acciones.js - Archivo principal refactorizado
 // Orquesta las acciones de UI delegando a módulos especializados
 
-import * as CasillaHandlers from "./casilla_handlers.js";
-import * as PropertyHandlers from "./property_handlers.js";
-import * as ActionValidator from "./action_validator.js";
-import { crearInfoDiv, limpiarContainer } from "./ui_helpers.js";
+import * as ControlCasillas from "./control_casillas.js";
+import * as ControlPropiedades from "./control_propiedades.js";
+import * as ValidarAcciones from "./validar_acciones.js";
+import { crearInfoDiv, limpiarContainer } from "./ui_ayudas.js";
 
 /**
  * Limpia el contenedor de acciones
@@ -22,7 +22,7 @@ export function renderPanelCasilla(casilla) {
   if (!mazo) return;
   
   if (!casilla) {
-    CasillaHandlers.resetMazoState();
+    ControlCasillas.resetMazoState();
     mazo.textContent = "⬜";
     return;
   }
@@ -75,10 +75,15 @@ export function mostrarAccionesCasillaDOM(jugadorActual, casilla, jugadores, tab
   if (!jugadorActual) return;
 
   const miJug = jugadorActual;
-  const propietario = ActionValidator.encontrarPropietario(casilla, jugadores);
+  const propietario = ValidarAcciones.encontrarPropietario(casilla, jugadores);
+
+  // Resetear estado del mazo al cambiar de jugador/casilla si no hay cartas pendientes
+  if (casilla.type !== "chance" && casilla.type !== "community_chest") {
+    ControlCasillas.resetMazoState();
+  }
 
   // Verificar si la acción ya fue resuelta para casillas obligatorias
-  const accionObligatoria = ActionValidator.esAccionObligatoria(casilla, propietario, miJug);
+  const accionObligatoria = ValidarAcciones.esAccionObligatoria(casilla, propietario, miJug);
   
   if (miJug.accionResuelta && accionObligatoria) {
     callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
@@ -90,29 +95,29 @@ export function mostrarAccionesCasillaDOM(jugadorActual, casilla, jugadores, tab
   // Delegar manejo según tipo de casilla
   switch (casilla.type) {
     case "jail":
-      CasillaHandlers.handleJailVisit(miJug, casilla, cont, callbacks);
+      ControlCasillas.handleJailVisit(miJug, casilla, cont, callbacks);
       break;
       
     case "go_to_jail":
-      CasillaHandlers.handleGoToJail(miJug, casilla, cont, callbacks);
+      ControlCasillas.handleGoToJail(miJug, casilla, cont, callbacks);
       break;
       
     default:
       // Si el jugador está encarcelado (independiente de la casilla)
       if (miJug.enCarcel) {
-        CasillaHandlers.handlePlayerInJail(miJug, casilla, cont, callbacks);
+        ControlCasillas.handlePlayerInJail(miJug, casilla, cont, callbacks);
         break;
       }
       
       // Manejo de cartas
       if (casilla.type === "chance" || casilla.type === "community_chest") {
-        CasillaHandlers.handleCards(miJug, casilla, cont, callbacks, tableroData);
+        ControlCasillas.handleCards(miJug, casilla, cont, callbacks, tableroData);
         break;
       }
       
       // Manejo de impuestos
       if (casilla.type === "tax" && casilla.action && typeof casilla.action.money === "number") {
-        CasillaHandlers.handleTax(miJug, casilla, cont, callbacks);
+        ControlCasillas.handleTax(miJug, casilla, cont, callbacks);
         break;
       }
       
@@ -129,22 +134,22 @@ export function mostrarAccionesCasillaDOM(jugadorActual, casilla, jugadores, tab
 
 /**
  * Maneja la lógica específica de propiedades
- * Delega a PropertyHandlers según el estado de la propiedad
+ * Delega a ControlPropiedades según el estado de la propiedad
  */
 function handleProperty(jugador, casilla, propietario, cont, callbacks, tableroData) {
   if (!propietario) {
     // Propiedad sin dueño
-    PropertyHandlers.handleUnownedProperty(jugador, casilla, cont, callbacks);
+    ControlPropiedades.handleUnownedProperty(jugador, casilla, cont, callbacks);
   } else if (propietario.id !== jugador.id) {
     // Propiedad de otro jugador - pagar renta
-    PropertyHandlers.handleRentPayment(jugador, casilla, propietario, cont, callbacks);
+    ControlPropiedades.handleRentPayment(jugador, casilla, propietario, cont, callbacks);
   } else {
     // Propiedad del jugador actual - opciones de gestión
-    PropertyHandlers.handleOwnedProperty(jugador, casilla, cont, callbacks, tableroData);
+    ControlPropiedades.handleOwnedProperty(jugador, casilla, cont, callbacks, tableroData);
   }
 }
 
 /**
  * Re-exportar funciones de validación para compatibilidad
  */
-export const tienePendientes = ActionValidator.tienePendientes;
+export const tienePendientes = ValidarAcciones.tienePendientes;
