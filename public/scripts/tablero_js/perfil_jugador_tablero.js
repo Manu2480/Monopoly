@@ -1,6 +1,12 @@
 // perfil_jugador_tablero.js
 import * as ACC from "./acciones_tablero.js";
 import { getJugadoresLS, replaceJugadores } from "./jugadores_estado.js";
+import { crearIconoFicha, getNombreIcono } from "./utils_iconos.js";
+
+// ---------- FUNCIONES AUXILIARES ----------
+function formatMoney(n) {
+  return (Number(n) || 0).toLocaleString();
+}
 
 // ---------- ICONOS SVG ----------
 function svgIcon(name) {
@@ -14,13 +20,9 @@ function svgIcon(name) {
   return icons[name] || "";
 }
 
-function formatMoney(n) {
-  return (Number(n) || 0).toLocaleString();
-}
-
 /**
  * renderizarPerfilJugador(jugador, tableroData = null, actualizarUI = null)
- * - Ahora también permite hipotecar, vender, vender casas/hoteles desde el perfil.
+ * - Versión actualizada con iconos Font Awesome
  */
 export function renderizarPerfilJugador(jugador, tableroData = null, actualizarUI = null) {
   const perfilDiv = document.getElementById("perfil-jugador");
@@ -55,6 +57,9 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
     ? `<img src="https://flagcdn.com/24x18/${jugador.pais}.png" alt="${jugador.pais}" style="vertical-align:middle; margin-left:6px;">`
     : "";
 
+  // Usar las funciones importadas de utils_iconos.js
+  const iconoHtml = crearIconoFicha(jugador.ficha || "");
+
   // Construir HTML de secciones por color
   let seccionesHTML = "";
   const colores = Object.keys(grupos).sort((a,b) => (a||"").localeCompare(b||""));
@@ -67,7 +72,7 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
         const hipIcon = prop.hipotecado ? `<span class="perfil-ico perfil-ico-mortgage" title="Hipotecada">${svgIcon("mortgage")}</span>` : "";
         const casasHtml = prop.casas > 0 ? `<span class="perfil-ico perfil-ico-house" title="${prop.casas} casas">${svgIcon("house")} <small style="margin-left:6px;font-weight:700;">x${prop.casas}</small></span>` : "";
         const hotelHtml = prop.hotel > 0 ? `<span class="perfil-ico perfil-ico-hotel" title="Hotel">${svgIcon("hotel")} <small style="margin-left:6px;font-weight:700;">x${prop.hotel}</small></span>` : "";
-        const precioHtml = prop.precio ? `<div style="font-size:12px;color:#666;margin-top:6px">Precio: $${formatMoney(prop.precio)}</div>` : "";
+        const precioHtml = prop.precio ? `<div style="font-size:12px;color:#666;margin-top:6px">Precio: ${formatMoney(prop.precio)}</div>` : "";
 
         // botones de acción
         const accionesHtml = `
@@ -116,7 +121,7 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
   perfilDiv.innerHTML = `
     <div style="display:flex; gap:12px; align-items:center; justify-content:space-between;">
       <div>
-        <h2 style="margin:0 0 6px 0; font-size:18px;">${jugador.ficha || ""} ${jugador.nombre || "Jugador"}</h2>
+        <h2 style="margin:0 0 6px 0; font-size:18px;">${iconoHtml} ${jugador.nombre || "Jugador"}</h2>
         <div style="font-size:13px;color:#444;">
           <span style="display:inline-block;margin-right:12px;"><strong>País:</strong> ${jugador.pais?.toUpperCase() || "??"} ${bandera}</span>
           <span style="display:inline-block;margin-right:12px;"><strong>Posición:</strong> Casilla #${jugador.posicionActual ?? 0}</span>
@@ -125,7 +130,7 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
       <div style="text-align:right;">
         <div style="font-size:13px;color:#666;">Dinero</div>
         <div style="font-weight:800; font-size:16px; display:flex; align-items:center; gap:8px; justify-content:flex-end;">
-          <span style="display:inline-flex; align-items:center; gap:6px;">${svgIcon("coin")} <span>$${formatMoney(jugador.dinero ?? 0)}</span></span>
+          <span style="display:inline-flex; align-items:center; gap:6px;">${svgIcon("coin")} <span>${formatMoney(jugador.dinero ?? 0)}</span></span>
         </div>
       </div>
     </div>

@@ -8,23 +8,26 @@
  * @returns {boolean} True si tiene acciones pendientes
  */
 export function tienePendientes(jugador, casilla) {
+  console.log("🔍 tienePendientes - jugador:", jugador?.nombre, "casilla:", casilla?.name, "tipo:", casilla?.type);
+  
   if (!jugador || !casilla) return false;
-  if (jugador.accionResuelta) return false;
-
-  // TAX: siempre bloquear hasta pagar
-  if (casilla.type === "tax" && casilla.action && typeof casilla.action.money === "number") {
-    return casilla.action.money < 0;
+  if (jugador.accionResuelta) {
+    console.log("❌ accion ya resuelta");
+    return false;
   }
 
   // PROPIEDAD / RAILROAD → solo pendiente si tiene dueño distinto
   if (casilla.type === "property" || casilla.type === "railroad") {
-    if (!casilla.ownerId) return false;                 // libre → no bloquea
-    if (casilla.ownerId === jugador.id) return false;   // propia → no bloquea
-    return true; // de otro → pagar renta obligatorio
-  }
-
-  // CARTAS
-  if (casilla.type === "chance" || casilla.type === "community_chest") {
+    console.log("🏠 Es propiedad/railroad - ownerId:", casilla.ownerId, "jugador.id:", jugador.id);
+    if (!casilla.ownerId) {
+      console.log("❌ Sin dueño");
+      return false;
+    }
+    if (casilla.ownerId === jugador.id) {
+      console.log("❌ Es del jugador actual");
+      return false;
+    }
+    console.log("✅ Tiene dueño diferente - debe pagar renta");
     return true;
   }
 

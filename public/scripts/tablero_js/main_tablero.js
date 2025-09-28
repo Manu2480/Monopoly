@@ -8,10 +8,10 @@ import { cambiarTurno, moverJugador } from "./jugadores_tablero.js";
 import { determinarCasillasVisibles, calcularRangoVisible } from "./utils_tablero.js";
 import { resetPanelCarta } from "./cartas_tablero.js";
 
-import { mostrarAccionesCasillaDOM, clearAccionesCasilla, renderPanelCasilla, tienePendientes} from "./ui_acciones.js";
+import { mostrarAccionesCasillaDOM, tienePendientes} from "./ui_acciones.js";
 import { renderizarPerfilJugador, resetPerfilJugador } from "./perfil_jugador_tablero.js";
 
-import * as ControlCasillas from "./ui_acciones.js"; // Importa todo el módulo
+import {resetMazoState} from "./control_casillas.js";
 
 // ======================== VARIABLES GLOBALES ========================
 let tableroData = { casillas: [], community_chest: [], chance: [] };
@@ -203,14 +203,29 @@ window.onload = async () => {
     // ⏭️ Cambiar turno
     document.getElementById("btn-turno").addEventListener("click", async () => {
       const jugadorActual = jugadores[indiceTurno];
-
-      // DEBUG - añade estas líneas temporalmente
-      console.log("Estado actual:", {
-        haMovido: haMovido,
-        puedeTirar: puedeTirar,
-        enCarcel: jugadorActual.enCarcel,
-        accionResuelta: jugadorActual.accionResuelta
-      });
+      const pos = typeof jugadorActual.posicionActual === "number" ? jugadorActual.posicionActual : 0;
+      const casillaActual = tableroData.casillas.find(c => c.id === pos) ?? tableroData.casillas[pos] ?? null;
+      
+      // 🔍 DEBUG - AGREGAR ESTOS LOGS
+      console.log("=== DEBUG PASAR TURNO ===");
+      console.log("Jugador actual:", jugadorActual.nombre);
+      console.log("Posición:", pos);
+      console.log("Casilla actual:", casillaActual);
+      console.log("Tipo de casilla:", casillaActual?.type);
+      console.log("haMovido:", haMovido);
+      console.log("accionResuelta:", jugadorActual.accionResuelta);
+      
+      // Buscar propietario
+      const propietario = jugadores.find(j => 
+        (j.propiedades || []).some(p => Number(p.idPropiedad) === Number(casillaActual?.id))
+      );
+      console.log("Propietario encontrado:", propietario?.nombre || "ninguno");
+      console.log("Es propiedad de otro:", propietario && propietario.id !== jugadorActual.id);
+      
+      // Verificar pendientes
+      const pendientes = tienePendientes(jugadorActual, casillaActual);
+      console.log("Tiene pendientes:", pendientes);
+      console.log("========================");
       
       // Si el jugador está en la cárcel, verificar si ya usó su turno
       if (jugadorActual.enCarcel) {

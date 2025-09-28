@@ -1,6 +1,7 @@
 // ui_tablero.js
 // Ahora delegamos el render de acciones a ui_acciones.mostrarAccionesCasillaDOM
 import { renderPanelCasilla, mostrarAccionesCasillaDOM } from "./ui_acciones.js";
+import { crearIconoFicha, getNombreIcono } from "./utils_iconos.js";
 
 /**
  * Añade la ficha visual del jugador dentro de la casilla DOM
@@ -16,8 +17,15 @@ export function agregarJugadorACasilla(casillaElem, jugador, esActual) {
   const ficha = document.createElement("div");
   ficha.classList.add("jugador");
   ficha.style.backgroundColor = jugador.color || "#1D1D1D";
-  ficha.title = jugador.nombre;
-  if (jugador.ficha) ficha.textContent = jugador.ficha;
+  
+  // Para el title usamos el nombre descriptivo
+  ficha.title = `${jugador.nombre} (${getNombreIcono(jugador.ficha)})`;
+  
+  // 🔧 FIX: Usar iconos de Font Awesome
+  if (jugador.ficha) {
+    const iconoHtml = crearIconoFicha(jugador.ficha);
+    ficha.innerHTML = iconoHtml;
+  }
 
   if (esActual) ficha.classList.add("ring-2");
   contenedor.appendChild(ficha);
@@ -33,7 +41,11 @@ export function renderizarBarraJugadores(jugadores) {
 
   for (const j of jugadores) {
     const span = document.createElement("span");
-    span.textContent = `${j.ficha || ""} ${j.nombre}`;
+    
+    // 🔧 FIX: Usar iconos de Font Awesome
+    const iconoHtml = crearIconoFicha(j.ficha || "");
+    span.innerHTML = `${iconoHtml} ${j.nombre}`;
+    
     span.classList.add("jugador-barra");
     span.style.color = j.color;
 
