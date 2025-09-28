@@ -1,5 +1,7 @@
 // jugadores_tablero.js
 import { getJugadoresLS, updateJugador, replaceJugadores } from "./jugadores_estado.js";
+import { clearAccionesCasilla, renderPanelCasilla } from "./ui_acciones.js";
+
 
 /**
  * moverJugador
@@ -45,14 +47,24 @@ export function cambiarTurno(jugadores, indiceActual, setIndiceCB, setPuedeTirar
   jugadores.forEach(j => (j.turno = false));
 
   const siguiente = (indiceActual + 1) % jugadores.length;
-  if (jugadores[siguiente]) jugadores[siguiente].turno = true;
+  if (jugadores[siguiente]) {
+    jugadores[siguiente].turno = true;
+    // NO reiniciamos jugadores[siguiente].accionResuelta aquí
+    // (la acción resuelta debe mantenerse hasta que el jugador se mueva)
+  }
 
   replaceJugadoresIfDifferent(jugadores);
 
   if (typeof setIndiceCB === "function") setIndiceCB(siguiente);
   if (typeof setPuedeTirarCB === "function") setPuedeTirarCB(true);
   if (typeof setHaMovidoCB === "function") setHaMovidoCB(false);
+
+  // limpiar estado visual de la casilla
+  clearAccionesCasilla();
+  renderPanelCasilla(null);
 }
+
+
 
 /* ---------- Helpers ---------- */
 function replaceJugadoresIfDifferent(jugadoresArray) {

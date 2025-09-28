@@ -77,7 +77,9 @@ export function tieneMonopolio(jugador, tableroData, idPropiedad) {
   const casilla = tableroData?.casillas?.find(c => Number(c.id) === Number(idPropiedad));
   if (!casilla || !casilla.color) return false;
   const color = casilla.color;
-  const ids = tableroData.casillas.filter(c => c.color && String(c.color).toLowerCase() === String(color).toLowerCase()).map(c => Number(c.id));
+  const ids = tableroData.casillas
+    .filter(c => c.color && String(c.color).toLowerCase() === String(color).toLowerCase())
+    .map(c => Number(c.id));
   if (ids.length === 0) return false;
   const idsJugador = (jugador.propiedades || []).map(p => Number(p.idPropiedad));
   return ids.every(id => idsJugador.includes(Number(id)));
@@ -89,11 +91,9 @@ export function propiedadesTotalesDelColor(tableroData, color) {
   return tableroData.casillas.filter(c => c.color && String(c.color).toLowerCase() === String(color).toLowerCase()).length;
 }
 
-// acciones_tablero.js
-
 /**
- * Comprueba si en las propiedades del 'color' hay casas u hoteles (cualquier propiedad del color).
- * Retorna true si existe al menos una construcción (casas>0 o hotel>0).
+ * Comprueba si en las propiedades del 'color' que POSEE el jugador hay casas u hoteles.
+ * Retorna true si existe al menos una construcción.
  */
 export function tieneConstruccionesEnColor(jugador, tableroData, color) {
   if (!color || !tableroData || !Array.isArray(tableroData.casillas)) return false;
@@ -102,11 +102,8 @@ export function tieneConstruccionesEnColor(jugador, tableroData, color) {
     .map(c => Number(c.id));
   if (!idsColor || idsColor.length === 0) return false;
   const propsDelColor = (jugador.propiedades || []).filter(p => idsColor.includes(Number(p.idPropiedad)));
-  // Si no posee todas las propiedades no importa: si alguna propiedad que posee del color tiene construcciones,
-  // igualmente retorna true (condición para bloquear hipoteca).
   return propsDelColor.some(pp => (Number(pp.casas) || 0) > 0 || (Number(pp.hotel) || 0) > 0);
 }
-
 
 /* ---------- TodasPropiedadesCon4 (considera hotel como válida) ---------- */
 export function todasPropiedadesCon4(jugador, tableroData, color) {
@@ -119,7 +116,6 @@ export function todasPropiedadesCon4(jugador, tableroData, color) {
   const propsDelColor = (jugador.propiedades || []).filter(p => idsColor.includes(Number(p.idPropiedad)));
   if (propsDelColor.length !== idsColor.length) return false;
 
-  // Válida si cada propiedad tiene 4 casas o ya tiene hotel
   return propsDelColor.every(p => (Number(p.casas) || 0) >= 4 || (Number(p.hotel) || 0) >= 1);
 }
 
@@ -230,5 +226,3 @@ export function calcularRentaParaCasilla(casilla, propietario) {
   }
   return casilla.rent?.base ?? Math.max(1, Math.floor((Number(casilla.price) || 0) * 0.1));
 }
-
-/* ---------- Exports (ya hechos por 'export function' arriba) ---------- */

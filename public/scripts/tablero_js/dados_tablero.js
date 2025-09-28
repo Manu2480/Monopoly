@@ -37,6 +37,11 @@ export function tirarDados(
     return;
   }
 
+  // 🔄 cada vez que tiramos, reiniciamos acción pendiente
+  if (jugadores[indiceTurno]) {
+    jugadores[indiceTurno].accionResuelta = false;
+  }
+
   const dado1 = document.getElementById("dado1");
   const dado2 = document.getElementById("dado2");
   if (!dado1 || !dado2) return;
@@ -68,8 +73,13 @@ export function tirarDados(
       if (typeof actualizarUI === "function") {
         await actualizarUI();
       } else {
-        // compatibilidad: actualizar solo el perfil con la firma nueva
+        // compatibilidad: actualizar solo el perfil
         renderizarPerfilJugador(jugadores[indiceTurno], tableroData, null);
+      }
+
+      // 👀 actualizar casilla actual después de mover con dados
+      if (typeof window.mostrarAccionesCasillaParaJugadorActual === "function") {
+        window.mostrarAccionesCasillaParaJugadorActual();
       }
     }
 
@@ -83,6 +93,7 @@ export function tirarDados(
 function getCara() {
   return Math.floor(Math.random() * 6) + 1; // 1..6
 }
+
 function obtenerValorDado(cara) {
   return Number(cara) || 1;
 }

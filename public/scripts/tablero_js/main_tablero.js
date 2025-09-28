@@ -8,7 +8,7 @@ import { cambiarTurno, moverJugador } from "./jugadores_tablero.js";
 import { determinarCasillasVisibles, calcularRangoVisible } from "./utils_tablero.js";
 import { resetPanelCarta } from "./cartas_tablero.js";
 
-import { mostrarAccionesCasillaDOM } from "./ui_acciones.js";
+import { mostrarAccionesCasillaDOM, clearAccionesCasilla, renderPanelCasilla, tienePendientes} from "./ui_acciones.js";
 import { renderizarPerfilJugador, resetPerfilJugador } from "./perfil_jugador_tablero.js";
 
 // ======================== VARIABLES GLOBALES ========================
@@ -52,7 +52,10 @@ function setEstadoBotones(estado) {
 
 function iniciarJuego() {
   indiceTurno = 0;
-  jugadores.forEach(j => (j.turno = false));
+  jugadores.forEach(j => {
+    j.turno = false;
+    j.accionResuelta = false; // ✅ resetear al inicio
+  });
   if (jugadores[indiceTurno]) jugadores[indiceTurno].turno = true;
 
   juegoIniciado = true;
@@ -61,12 +64,10 @@ function iniciarJuego() {
 
   renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
   renderizarBarraJugadores(jugadores);
-  // PERFIL: ahora recibe tableroData y callback para refrescar UI
   renderizarPerfilJugador(jugadores[indiceTurno], tableroData, actualizarUICompleta);
 
   setEstadoBotones("jugando");
 
-  // Mostrar acciones de la casilla inicial del jugador
   mostrarAccionesCasillaParaJugadorActual();
 }
 
@@ -76,15 +77,14 @@ function finalizarJuego() {
 
   renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
   renderizarBarraJugadores(jugadores);
-  resetPerfilJugador(); // 👈 limpiar perfil
+  resetPerfilJugador();
 
   setEstadoBotones("finalizado");
-  // limpiar acciones de casilla
   const cont = document.getElementById("acciones-casilla");
   if (cont) cont.innerHTML = "";
 }
 
-// ======================== ACCIONES --Z CASILLA ACTUAL ========================
+// ======================== ACCIONES CASILLA ACTUAL ========================
 function bloquearPasarTurno() {
   const btn = document.getElementById("btn-turno");
   if (btn) btn.disabled = true;
@@ -95,26 +95,21 @@ function habilitarPasarTurno() {
 }
 
 async function actualizarUICompleta() {
-  // recargar jugadores desde LS / API
   jugadores = await cargarJugadores();
   casillasVisibles = determinarCasillasVisibles();
   renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
   renderizarBarraJugadores(jugadores);
-  // renderizar perfil del jugador actual con tableroData y callback
   renderizarPerfilJugador(jugadores[indiceTurno], tableroData, actualizarUICompleta);
 
-  // mostrar acciones de casilla para el jugador actual (si hay casilla)
   mostrarAccionesCasillaParaJugadorActual();
 }
 
-// Muestra las acciones en DOM para la casilla donde está el jugador actual
 function mostrarAccionesCasillaParaJugadorActual() {
   const jugador = jugadores[indiceTurno];
   if (!jugador || !tableroData?.casillas) return;
   const pos = typeof jugador.posicionActual === "number" ? jugador.posicionActual : 0;
   const casillaActual = tableroData.casillas.find(c => c.id === pos) ?? tableroData.casillas[pos] ?? null;
   if (!casillaActual) {
-    // limpiar si no hay casilla
     const cont = document.getElementById("acciones-casilla");
     if (cont) cont.innerHTML = "";
     return;
@@ -136,7 +131,6 @@ function mostrarAccionesCasillaParaJugadorActual() {
 // ======================== INIT ========================
 window.onload = async () => {
   try {
-    // Cargar tablero y jugadores
     await cargarTablero(tableroData);
     jugadores = await cargarJugadores();
 
@@ -145,12 +139,11 @@ window.onload = async () => {
     mostrarAccionesCasillaParaJugadorActual();
     renderizarBarraJugadores(jugadores);
 
-    // perfil inicial (con tableroData y callback)
     renderizarPerfilJugador(jugadores[indiceTurno], tableroData, actualizarUICompleta);
 
     setEstadoBotones("no-iniciado");
 
-    // ▶️ Iniciar / Finalizar Juego
+    // ▶️ Iniciar / Finalizar juego
     document.getElementById("btn-inicio").addEventListener("click", () => {
       juegoIniciado ? finalizarJuego() : iniciarJuego();
     });
@@ -166,16 +159,18 @@ window.onload = async () => {
         puedeTirar,
         v => (puedeTirar = v),
         v => (haMovido = v),
-        actualizarUICompleta // ← nuevo argumento
+        actualizarUICompleta
+
       )
+      
     );
 
-    // ➡️ Mover manual
+    // 👣 Mover manualmente
     document.getElementById("btn-mover").addEventListener("click", async () => {
       const input = document.getElementById("input-pasos");
       const pasos = parseInt(input.value);
+
       if (!isNaN(pasos) && pasos > 0) {
-        // moverJugador debe actualizar la posición en la estructura 'jugadores' en memoria
         moverJugador(
           jugadores[indiceTurno].id,
           pasos,
@@ -184,16 +179,24 @@ window.onload = async () => {
           casillasVisibles,
           calcularRangoVisible
         );
-        haMovido = true;
 
-        // actualizar UI tras mover
+        haMovido = true; // ✅ cuenta como movimiento de turno
+
+        // 🔄 resetear acción pendiente al moverse
+        if (jugadores[indiceTurno]) {
+          jugadores[indiceTurno].accionResuelta = false;
+        }
+
+        // 🔄 refrescar tablero y perfil
         await actualizarUICompleta();
+
+        // 👀 actualizar casilla actual
+        mostrarAccionesCasillaParaJugadorActual();
       }
+
       input.value = "";
     });
 
-    // Mostrar acciones iniciales (para el jugador en su casilla actual)
-    mostrarAccionesCasillaParaJugadorActual();
 
     // ⏭️ Cambiar turno
     document.getElementById("btn-turno").addEventListener("click", async () => {
@@ -202,10 +205,19 @@ window.onload = async () => {
         return;
       }
 
-      // verificar deuda antes de permitir cambio
       const jugadorActual = jugadores[indiceTurno];
       if ((jugadorActual?.deudaBanco || 0) > 0) {
         alert("Tienes deuda pendiente. Vende propiedades o hipoteca para cubrirla antes de pasar turno.");
+        return;
+      }
+
+      // ✅ Verificar si tiene pendientes
+      const pos = typeof jugadorActual.posicionActual === "number" ? jugadorActual.posicionActual : 0;
+      const casillaActual = tableroData.casillas.find(c => c.id === pos) ?? tableroData.casillas[pos] ?? null;
+
+      // 🔎 Solo bloquear si la casilla realmente requiere acción y no está resuelta
+      if (tienePendientes(jugadorActual, casillaActual) && !jugadorActual.accionResuelta) {
+        alert("⚠️ No puedes pasar el turno: primero resuelve la acción de esta casilla.");
         return;
       }
 
@@ -217,22 +229,25 @@ window.onload = async () => {
         v => (haMovido = v)
       );
 
-      // volver a renderizar y actualizar perfil con callback
+      // NO resetear accionResuelta del nuevo jugador aquí:
+      // (dejar que permanezca true si ya había pagado la casilla)
+
       renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
       renderizarBarraJugadores(jugadores);
       renderizarPerfilJugador(jugadores[indiceTurno], tableroData, actualizarUICompleta);
-      resetPanelCarta(); // 👈 volver a ⬜ al cambiar turno
-
-      // mostrar acciones para la nueva casilla del jugador al iniciar su turno
+      resetPanelCarta();
       mostrarAccionesCasillaParaJugadorActual();
+
     });
 
-    // redimensionamiento
+
+
+    // 🔄 Redimensionar tablero
     window.addEventListener("resize", () => {
       casillasVisibles = determinarCasillasVisibles();
       renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
     });
-  } catch (err) {
-    console.error("❌ Error iniciando el juego:", err);
-  }
+    } catch (err) {
+      console.error("❌ Error iniciando el juego:", err);
+    }
 };

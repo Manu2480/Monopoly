@@ -1,5 +1,6 @@
 // perfil_jugador_tablero.js
-// Muestra solo las propiedades agrupadas por color, con nombre, casas/hoteles e indicación de hipoteca.
+import * as ACC from "./acciones_tablero.js";
+import { getJugadoresLS, replaceJugadores } from "./jugadores_estado.js";
 
 // ---------- ICONOS SVG ----------
 function svgIcon(name) {
@@ -19,8 +20,7 @@ function formatMoney(n) {
 
 /**
  * renderizarPerfilJugador(jugador, tableroData = null, actualizarUI = null)
- * - Muestra solo: nombre, país, dinero, posición y propiedades agrupadas por color.
- * - No incluye acciones (vender/hipotecar) — esas deben manejarse en el panel de casilla.
+ * - Ahora también permite hipotecar, vender, vender casas/hoteles desde el perfil.
  */
 export function renderizarPerfilJugador(jugador, tableroData = null, actualizarUI = null) {
   const perfilDiv = document.getElementById("perfil-jugador");
@@ -34,7 +34,6 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
   // Agrupar propiedades por color
   const grupos = {};
   (jugador.propiedades || []).forEach(p => {
-    // Buscar datos de la casilla en tableroData
     const casilla = tableroData?.casillas?.find(c => Number(c.id) === Number(p.idPropiedad))
       || { id: p.idPropiedad, name: `Propiedad #${p.idPropiedad}`, color: "gray" };
 
@@ -47,7 +46,8 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
       casas: Number(p.casas) || 0,
       hotel: Number(p.hotel) || 0,
       hipotecado: !!p.hipotecado,
-      precio: casilla.price || null
+      precio: casilla.price || null,
+      casilla
     });
   });
 
@@ -64,11 +64,21 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
     seccionesHTML = colores.map(color => {
       const props = grupos[color];
       const items = props.map(prop => {
-        // iconos y textos (sin emojis)
         const hipIcon = prop.hipotecado ? `<span class="perfil-ico perfil-ico-mortgage" title="Hipotecada">${svgIcon("mortgage")}</span>` : "";
         const casasHtml = prop.casas > 0 ? `<span class="perfil-ico perfil-ico-house" title="${prop.casas} casas">${svgIcon("house")} <small style="margin-left:6px;font-weight:700;">x${prop.casas}</small></span>` : "";
         const hotelHtml = prop.hotel > 0 ? `<span class="perfil-ico perfil-ico-hotel" title="Hotel">${svgIcon("hotel")} <small style="margin-left:6px;font-weight:700;">x${prop.hotel}</small></span>` : "";
         const precioHtml = prop.precio ? `<div style="font-size:12px;color:#666;margin-top:6px">Precio: $${formatMoney(prop.precio)}</div>` : "";
+
+        // botones de acción
+        const accionesHtml = `
+          <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;font-size:12px;">
+            <button class="perfil-btn" data-accion="hipoteca" data-id="${prop.idPropiedad}">${prop.hipotecado ? "Deshipotecar" : "Hipotecar"}</button>
+            <button class="perfil-btn" data-accion="vender" data-id="${prop.idPropiedad}">Vender</button>
+            ${prop.casas > 0 ? `<button class="perfil-btn" data-accion="vender-casa" data-id="${prop.idPropiedad}">Vender Casa</button>` : ""}
+            ${prop.hotel > 0 ? `<button class="perfil-btn" data-accion="vender-hotel" data-id="${prop.idPropiedad}">Vender Hotel</button>` : ""}
+          </div>
+        `;
+
         return `
           <li style="padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
             <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
@@ -79,6 +89,7 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
                   ${hotelHtml}
                 </div>
                 ${precioHtml}
+                ${accionesHtml}
               </div>
               <div style="width:18px;height:18px;border-radius:4px;background:${color};box-shadow:inset 0 0 0 1px rgba(0,0,0,0.06);"></div>
             </div>
@@ -125,7 +136,32 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
     <div id="perfil-props">${seccionesHTML}</div>
   `;
 
-  // Nota: No añadimos handlers aquí (el perfil es informativo).
+  // 🔗 listeners para los botones de acción
+  perfilDiv.querySelectorAll(".perfil-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const idProp = Number(btn.dataset.id);
+      const accion = btn.dataset.accion;
+      const casilla = tableroData?.casillas?.find(c => Number(c.id) === idProp);
+      if (!casilla) return;
+
+      if (accion === "hipoteca") {
+        ACC.toggleHipoteca(jugador.id, casilla);
+      }
+      if (accion === "vender") {
+        if (confirm("¿Vender esta propiedad por la mitad de su precio?")) {
+          ACC.venderPropiedad(jugador.id, tableroData, casilla);
+        }
+      }
+      if (accion === "vender-casa") {
+        ACC.venderCasa(jugador.id, tableroData, casilla);
+      }
+      if (accion === "vender-hotel") {
+        ACC.venderHotel(jugador.id, tableroData, casilla);
+      }
+
+      if (typeof actualizarUI === "function") actualizarUI();
+    });
+  });
 }
 
 export function resetPerfilJugador() {
