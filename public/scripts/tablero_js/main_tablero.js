@@ -73,17 +73,59 @@ function iniciarJuego() {
   mostrarAccionesCasillaParaJugadorActual();
 }
 
+// Función modificada para redirigir a fin.html
 function finalizarJuego() {
+  // Guardar snapshot final de jugadores para fin.html
+  try {
+    // Calcular patrimonio final para cada jugador antes de guardar
+    jugadores.forEach(j => {
+      let valorPropiedades = 0;
+      let terrenos = 0, ferrocarriles = 0, servicios = 0;
+      let casas = 0, hoteles = 0;
+
+      (j.propiedades || []).forEach(p => {
+        const propInfo = Array.isArray(tableroData.casillas) ? tableroData.casillas.find(b => b.id == p.idPropiedad) : null;
+        const basePrice = propInfo ? (propInfo.price || 0) : 0;
+
+        if (propInfo && propInfo.type === "property") terrenos++;
+        if (propInfo && propInfo.type === "railroad") ferrocarriles++;
+        if (propInfo && propInfo.type === "utility") servicios++;
+
+        // Solo contar valor si no está hipotecado
+        if (!p.hipotecado) {
+          valorPropiedades += basePrice;
+          valorPropiedades += (p.casas || 0) * 100;
+          valorPropiedades += (p.hotel || 0) * 200;
+        }
+
+        casas += p.casas || 0;
+        hoteles += p.hotel || 0;
+      });
+
+      // Actualizar propiedades calculadas
+      j.valorPropiedades = valorPropiedades;
+      j.terrenos = terrenos;
+      j.ferrocarriles = ferrocarriles;
+      j.servicios = servicios;
+      j.casas = casas;
+      j.hoteles = hoteles;
+      j.patrimonio = (j.dinero || 0) + valorPropiedades - (j.deudaBanco || 0);
+    });
+
+    // Guardar en localStorage para que fin.html lo lea
+    localStorage.setItem("jugadores_partida", JSON.stringify(jugadores));
+    
+    console.log("[main_tablero.js] Datos finales guardados para fin.html");
+  } catch (e) {
+    console.error("[main_tablero.js] Error guardando datos finales:", e);
+  }
+
+  // Limpiar estado del juego
   jugadores.forEach(j => (j.turno = false));
   juegoIniciado = false;
 
-  renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
-  renderizarBarraJugadores(jugadores);
-  resetPerfilJugador();
-
-  setEstadoBotones("finalizado");
-  const cont = document.getElementById("acciones-casilla");
-  if (cont) cont.innerHTML = "";
+  // Redirigir a fin.html
+  window.location.href = "fin.html";
 }
 
 // ======================== ACCIONES CASILLA ACTUAL ========================
@@ -223,7 +265,7 @@ window.onload = async () => {
       console.log("Es propiedad de otro:", propietario && propietario.id !== jugadorActual.id);
       
       // Verificar pendientes
-      const pendientes = tienePendientes(jugadorActual, casillaActual);
+      const pendientes = tienePendientes(jugadorActual, casillaActual, jugadores);    
       console.log("Tiene pendientes:", pendientes);
       console.log("========================");
       

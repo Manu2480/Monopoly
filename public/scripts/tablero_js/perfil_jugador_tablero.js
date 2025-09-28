@@ -8,10 +8,41 @@ function formatMoney(n) {
   return (Number(n) || 0).toLocaleString();
 }
 
+// Función para calcular el patrimonio/score del jugador
+function calcularPatrimonio(jugador, tableroData) {
+  let valorPropiedades = 0;
+  
+  if (Array.isArray(jugador.propiedades) && tableroData?.casillas) {
+    jugador.propiedades.forEach(p => {
+      const propInfo = tableroData.casillas.find(c => Number(c.id) === Number(p.idPropiedad));
+      const basePrice = propInfo ? (propInfo.price || 0) : 0;
+
+      // Solo sumar valor si no está hipotecada
+      if (!p.hipotecado) {
+        valorPropiedades += basePrice;
+        valorPropiedades += (p.casas || 0) * 100;
+        valorPropiedades += (p.hotel || 0) * 200;
+      }
+    });
+  }
+
+  const dinero = Number(jugador.dinero) || 0;
+  const deuda = Number(jugador.deudaBanco) || 0;
+  const patrimonio = dinero + valorPropiedades - deuda;
+
+  return {
+    patrimonio,
+    valorPropiedades,
+    dinero,
+    deuda
+  };
+}
+
 // ---------- ICONOS SVG ----------
 function svgIcon(name) {
   const icons = {
     coin: `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 14h-2v-2h2v2zm0-4h-2V6h2v6z"/></svg>`,
+    trophy: `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M7 4V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2h1a2 2 0 0 1 2 2v3c0 2.88-2.88 4.54-5.13 5.38L14 22h-4l-.87-7.62C6.88 13.54 4 11.88 4 9V6a2 2 0 0 1 2-2h1zM6 6v3c0 1.5 1.5 2.5 3 2.5V6H6zm9 5.5c1.5 0 3-1 3-2.5V6h-3v5.5z"/></svg>`,
     house: `<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 3l9 7v11a1 1 0 01-1 1h-5v-7h-6v7H4a1 1 0 01-1-1V10l9-7z"/></svg>`,
     hotel: `<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 21h18v-9H3v9zm2-7h14v5H5v-5zM7 9V7h10v2H7z"/></svg>`,
     mortgage: `<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2L2 7v13h20V7L12 2zm0 2.18L18 8v10H6V8l6-3.82zM11 11h2v6h-2z"/></svg>`,
@@ -22,7 +53,7 @@ function svgIcon(name) {
 
 /**
  * renderizarPerfilJugador(jugador, tableroData = null, actualizarUI = null)
- * - Versión actualizada con iconos Font Awesome
+ * - Versión actualizada con score/patrimonio
  */
 export function renderizarPerfilJugador(jugador, tableroData = null, actualizarUI = null) {
   const perfilDiv = document.getElementById("perfil-jugador");
@@ -32,6 +63,9 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
     perfilDiv.innerHTML = "";
     return;
   }
+
+  // Calcular patrimonio/score
+  const { patrimonio, valorPropiedades, dinero, deuda } = calcularPatrimonio(jugador, tableroData);
 
   // Agrupar propiedades por color
   const grupos = {};
@@ -109,7 +143,7 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
               <span style="display:inline-block;width:14px;height:14px;background:${color};border-radius:3px;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.06);"></span>
               <span style="text-transform:uppercase;">${color}</span>
             </span>
-            <small style="color:#666;font-weight:700;">— ${props.length}</small>
+            <small style="color:#666;font-weight:700;">– ${props.length}</small>
             <span style="margin-left:auto; opacity:0.7;">${svgIcon("chevron")}</span>
           </summary>
           <ul style="list-style:none;padding-left:0;margin-top:8px;margin-bottom:6px;">${items}</ul>
@@ -118,10 +152,24 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
     }).join("");
   }
 
+  // Determinar color del score basado en el valor
+  let scoreColor = "#666";
+  let scoreIcon = svgIcon("coin");
+  
+  if (patrimonio > 2000) {
+    scoreColor = "#4caf50"; // Verde para scores altos
+    scoreIcon = svgIcon("trophy");
+  } else if (patrimonio < 0) {
+    scoreColor = "#f44336"; // Rojo para scores negativos
+  }
+
   perfilDiv.innerHTML = `
     <div style="display:flex; gap:12px; align-items:center; justify-content:space-between;">
       <div>
-        <h2 style="margin:0 0 6px 0; font-size:18px;">${iconoHtml} ${jugador.nombre || "Jugador"}</h2>
+        <h2 style="margin:0 0 6px 0; font-size:18px; display:flex; align-items:center; gap:8px;">
+          ${iconoHtml} ${jugador.nombre || "Jugador"}
+          <span style="display:inline-block;width:20px;height:20px;background:${jugador.color || '#1D1D1D'};border-radius:50%;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,0.2);" title="Color del jugador"></span>
+        </h2>
         <div style="font-size:13px;color:#444;">
           <span style="display:inline-block;margin-right:12px;"><strong>País:</strong> ${jugador.pais?.toUpperCase() || "??"} ${bandera}</span>
           <span style="display:inline-block;margin-right:12px;"><strong>Posición:</strong> Casilla #${jugador.posicionActual ?? 0}</span>
@@ -130,7 +178,23 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
       <div style="text-align:right;">
         <div style="font-size:13px;color:#666;">Dinero</div>
         <div style="font-weight:800; font-size:16px; display:flex; align-items:center; gap:8px; justify-content:flex-end;">
-          <span style="display:inline-flex; align-items:center; gap:6px;">${svgIcon("coin")} <span>${formatMoney(jugador.dinero ?? 0)}</span></span>
+          <span style="display:inline-flex; align-items:center; gap:6px;">${svgIcon("coin")} <span>${formatMoney(dinero)}</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de Score/Patrimonio -->
+    <div style="margin:12px 0; padding:10px; background:linear-gradient(135deg, #f5f5f5, #e8e8e8); border-radius:8px; border-left:4px solid ${scoreColor};">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-size:13px; color:#666; font-weight:600;">SCORE TOTAL</div>
+          <div style="font-size:20px; font-weight:800; color:${scoreColor}; display:flex; align-items:center; gap:8px;">
+            ${scoreIcon} <span>${formatMoney(patrimonio)}</span>
+          </div>
+        </div>
+        <div style="text-align:right; font-size:12px; color:#666;">
+          <div>Propiedades: ${formatMoney(valorPropiedades)}</div>
+          ${deuda > 0 ? `<div style="color:#f44336;">Deuda: -${formatMoney(deuda)}</div>` : ""}
         </div>
       </div>
     </div>

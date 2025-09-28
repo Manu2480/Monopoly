@@ -5,9 +5,10 @@
  * Determina si el jugador tiene acciones pendientes sin resolver
  * @param {Object} jugador - El jugador actual
  * @param {Object} casilla - La casilla actual
+ * @param {Array} jugadores - Array de todos los jugadores (necesario para buscar propietario)
  * @returns {boolean} True si tiene acciones pendientes
  */
-export function tienePendientes(jugador, casilla) {
+export function tienePendientes(jugador, casilla, jugadores = []) {
   console.log("🔍 tienePendientes - jugador:", jugador?.nombre, "casilla:", casilla?.name, "tipo:", casilla?.type);
   
   if (!jugador || !casilla) return false;
@@ -18,16 +19,35 @@ export function tienePendientes(jugador, casilla) {
 
   // PROPIEDAD / RAILROAD → solo pendiente si tiene dueño distinto
   if (casilla.type === "property" || casilla.type === "railroad") {
-    console.log("🏠 Es propiedad/railroad - ownerId:", casilla.ownerId, "jugador.id:", jugador.id);
-    if (!casilla.ownerId) {
+    console.log("🏠 Es propiedad/railroad - casilla.id:", casilla.id, "jugador.id:", jugador.id);
+    
+    // Buscar propietario en el array de jugadores
+    const propietario = jugadores.find(j => 
+      (j.propiedades || []).some(p => Number(p.idPropiedad) === Number(casilla.id))
+    );
+    
+    console.log("Propietario encontrado:", propietario?.nombre || "ninguno");
+    
+    if (!propietario) {
       console.log("❌ Sin dueño");
       return false;
     }
-    if (casilla.ownerId === jugador.id) {
+    if (propietario.id === jugador.id) {
       console.log("❌ Es del jugador actual");
       return false;
     }
     console.log("✅ Tiene dueño diferente - debe pagar renta");
+    return true;
+  }
+
+  // Para otros tipos de casillas (cartas, impuestos, etc.)
+  if (casilla.type === "tax" && casilla.action && typeof casilla.action.money === "number") {
+    console.log("💰 Es impuesto - debe pagar");
+    return casilla.action.money < 0; // Solo si debe pagar
+  }
+  
+  if (casilla.type === "chance" || casilla.type === "community_chest") {
+    console.log("🃏 Es carta - debe voltear");
     return true;
   }
 
@@ -62,9 +82,10 @@ export function esAccionObligatoria(casilla, propietario, jugadorActual) {
  * @param {Object} jugador - El jugador actual
  * @param {Object} casilla - La casilla actual
  * @param {boolean} haMovido - Si el jugador se ha movido en este turno
+ * @param {Array} jugadores - Array de todos los jugadores
  * @returns {Object} Resultado de la validación { puedepasar: boolean, razon: string }
  */
-export function puedeFinalizarTurno(jugador, casilla, haMovido) {
+export function puedeFinalizarTurno(jugador, casilla, haMovido, jugadores = []) {
   // Si el jugador está en la cárcel, verificar si ya usó su turno
   if (jugador.enCarcel) {
     if (!haMovido) {
@@ -86,7 +107,7 @@ export function puedeFinalizarTurno(jugador, casilla, haMovido) {
   }
 
   // Verificar si tienen acciones pendientes sin resolver
-  if (tienePendientes(jugador, casilla) && !jugador.accionResuelta) {
+  if (tienePendientes(jugador, casilla, jugadores) && !jugador.accionResuelta) {
     return { 
       puedePasar: false, 
       razon: "No puedes pasar el turno: primero resuelve la acción de esta casilla." 
