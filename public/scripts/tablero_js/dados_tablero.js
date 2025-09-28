@@ -1,25 +1,11 @@
-// dados_tablero.js
+// dados_tablero.js (versión mejorada con lógica de cárcel)
 import { moverJugador } from "./jugadores_tablero.js";
 import { mostrarResultadoDados } from "./ui_tablero.js";
 import { renderizarPerfilJugador } from "./perfil_jugador_tablero.js";
+import { getJugadoresLS, replaceJugadores } from "./jugadores_estado.js";
 
 /**
- * tirarDados(..., actualizarUI)
- * - ahora recibe un parámetro adicional `actualizarUI` (función) que
- *   será llamada después de mover para re-renderizar tablero/perfil.
- *
- * Firma:
- * tirarDados(
- *   jugadores,
- *   indiceTurno,
- *   tableroData,
- *   casillasVisibles,
- *   calcularRangoVisible,
- *   puedeTirar,
- *   setPuedeTirar,
- *   setHaMovido,
- *   actualizarUI // NUEVO
- * )
+ * tirarDados con lógica completa de cárcel
  */
 export function tirarDados(
   jugadores,
@@ -30,17 +16,18 @@ export function tirarDados(
   puedeTirar,
   setPuedeTirar,
   setHaMovido,
-  actualizarUI // nuevo callback
+  actualizarUI
 ) {
   if (!puedeTirar) {
     alert("Ya tiraste los dados.");
     return;
   }
 
+  const jugadorActual = jugadores[indiceTurno];
+  if (!jugadorActual) return;
+
   // 🔄 cada vez que tiramos, reiniciamos acción pendiente
-  if (jugadores[indiceTurno]) {
-    jugadores[indiceTurno].accionResuelta = false;
-  }
+  jugadorActual.accionResuelta = false;
 
   const dado1 = document.getElementById("dado1");
   const dado2 = document.getElementById("dado2");
@@ -54,14 +41,109 @@ export function tirarDados(
   rodarDado(dado2, resultado2);
 
   const suma = obtenerValorDado(resultado1) + obtenerValorDado(resultado2);
+  const esDoble = resultado1 === resultado2;
 
-  // Después de la animación mostramos resultado y movemos
+  // Después de la animación procesamos el resultado
   setTimeout(async () => {
     mostrarResultadoDados(suma);
 
-    if (jugadores.length > 0) {
+    // =================== LÓGICA DE CÁRCEL ===================
+    if (jugadorActual.enCarcel) {
+      // Inicializar intentos de cárcel si no existe
+      if (typeof jugadorActual.intentosCarcel !== 'number') {
+        jugadorActual.intentosCarcel = 0;
+      }
+
+      jugadorActual.intentosCarcel++;
+
+      if (esDoble) {
+        // ✅ SALIÓ CON DOBLES - sale de la cárcel y se mueve
+        alert(`¡Sacaste dobles (${resultado1}, ${resultado2})! Sales de la cárcel.`);
+        
+        jugadorActual.enCarcel = false;
+        jugadorActual.intentosCarcel = 0;
+        
+        // Se mueve normalmente
+        moverJugador(
+          jugadorActual.id,
+          suma,
+          jugadores,
+          tableroData,
+          casillasVisibles,
+          calcularRangoVisible
+        );
+        
+        // Puede tirar otra vez por sacar dobles
+        setPuedeTirar(true);
+        
+      } else {
+        // ❌ NO SACÓ DOBLES
+        if (jugadorActual.intentosCarcel >= 3) {
+          // Al tercer intento fallido, DEBE pagar la fianza automáticamente
+          alert(`Tercer intento fallido. Debes pagar la fianza de $50 automáticamente.`);
+          
+          if (jugadorActual.dinero >= 50) {
+            jugadorActual.dinero -= 50;
+            jugadorActual.enCarcel = false;
+            jugadorActual.intentosCarcel = 0;
+            
+            // Se mueve con el resultado de los dados
+            moverJugador(
+              jugadorActual.id,
+              suma,
+              jugadores,
+              tableroData,
+              casillasVisibles,
+              calcularRangoVisible
+            );
+          } else {
+            // No tiene dinero - queda en deuda
+            const faltante = 50 - jugadorActual.dinero;
+            jugadorActual.deudaBanco = (jugadorActual.deudaBanco || 0) + faltante;
+            jugadorActual.dinero = 0;
+            jugadorActual.enCarcel = false;
+            jugadorActual.intentosCarcel = 0;
+            
+            alert(`No tienes dinero suficiente. Quedas en deuda por $${faltante}.`);
+            
+            // Aún se mueve
+            moverJugador(
+              jugadorActual.id,
+              suma,
+              jugadores,
+              tableroData,
+              casillasVisibles,
+              calcularRangoVisible
+            );
+          }
+        } else {
+          // Primer o segundo intento fallido - pierde el turno
+          const intentosRestantes = 3 - jugadorActual.intentosCarcel;
+          alert(`No sacaste dobles. Te quedan ${intentosRestantes} intento(s) o puedes pagar la fianza. Pierdes este turno.`);
+          
+          // NO se mueve, pierde el turno
+          setPuedeTirar(false);
+          
+          // *** IMPORTANTE: NO llamar a moverJugador aquí ***
+          // El jugador pierde el turno y se queda en la misma posición
+        }
+      }
+      
+      // Guardar cambios en localStorage
+      const js = getJugadoresLS();
+      const idx = js.findIndex(j => j.id === jugadorActual.id);
+      if (idx >= 0) {
+        js[idx].enCarcel = jugadorActual.enCarcel;
+        js[idx].intentosCarcel = jugadorActual.intentosCarcel;
+        js[idx].dinero = jugadorActual.dinero;
+        js[idx].deudaBanco = jugadorActual.deudaBanco || 0;
+        replaceJugadores(js);
+      }
+      
+    } else {
+      // =================== JUEGO NORMAL ===================
       moverJugador(
-        jugadores[indiceTurno].id,
+        jugadorActual.id,
         suma,
         jugadores,
         tableroData,
@@ -69,26 +151,26 @@ export function tirarDados(
         calcularRangoVisible
       );
 
-      // REFRESCAR UI: si recibimos callback lo usamos, si no, al menos actualizamos perfil
-      if (typeof actualizarUI === "function") {
-        await actualizarUI();
-      } else {
-        // compatibilidad: actualizar solo el perfil
-        renderizarPerfilJugador(jugadores[indiceTurno], tableroData, null);
-      }
-
-      // 👀 actualizar casilla actual después de mover con dados
-      if (typeof window.mostrarAccionesCasillaParaJugadorActual === "function") {
-        window.mostrarAccionesCasillaParaJugadorActual();
-      }
+      // 👀 Si sacó dobles en juego normal, puede tirar otra vez
+      setPuedeTirar(esDoble);
     }
 
-    setHaMovido(true);
-    setPuedeTirar(suma % 2 === 0);
+    // Actualizar UI
+    if (typeof actualizarUI === "function") {
+      await actualizarUI();
+    } else {
+      renderizarPerfilJugador(jugadorActual, tableroData, null);
+    }
+
+    // Mostrar acciones de la casilla actual
+    if (typeof window.mostrarAccionesCasillaParaJugadorActual === "function") {
+      window.mostrarAccionesCasillaParaJugadorActual();
+    }
+
   }, 800);
 }
 
-/* ---- helpers ---- */
+/* ---- helpers sin cambios ---- */
 
 function getCara() {
   return Math.floor(Math.random() * 6) + 1; // 1..6

@@ -106,10 +106,7 @@ export function renderPanelCasilla(casilla) {
   </div>`;
 }
 
-/**
- * mostrarAccionesCasillaDOM(jugadorActual, casilla, jugadores, tableroData, callbacks)
- * callbacks: { actualizarUI, bloquearPasarTurno, habilitarPasarTurno }
- */
+//dom
 export function mostrarAccionesCasillaDOM(jugadorActual, casilla, jugadores, tableroData, callbacks = {}) {
   const cont = document.getElementById("acciones-casilla");
   if (!cont) return;
@@ -121,16 +118,14 @@ export function mostrarAccionesCasillaDOM(jugadorActual, casilla, jugadores, tab
   const miJug = jugadorActual;
   const propietario = Array.isArray(jugadores) ? jugadores.find(j => (j.propiedades || []).some(p => Number(p.idPropiedad) === Number(casilla?.id))) : null;
 
-
   // Si la acción ya fue resuelta: mostrar el estado SOLO si la casilla es de tipo obligatorio
-  // (tax pagado, carta aplicada, o renta ya pagada cuando la casilla pertenece a otro)
   const accionObligatoria = (() => {
     if (!casilla) return false;
     if (casilla.type === "tax" && casilla.action && typeof casilla.action.money === "number") {
-      return casilla.action.money < 0; // impuestos a pagar
+      return casilla.action.money < 0;
     }
     if (casilla.type === "chance" || casilla.type === "community_chest") return true;
-    if ((casilla.type === "property" || casilla.type === "railroad") && propietario && propietario.id !== miJug.id) return true; // renta a dueño distinto
+    if ((casilla.type === "property" || casilla.type === "railroad") && propietario && propietario.id !== miJug.id) return true;
     return false;
   })();
 
@@ -144,55 +139,161 @@ export function mostrarAccionesCasillaDOM(jugadorActual, casilla, jugadores, tab
     return;
   }
 
-  // ----------------- CÁRCEL -----------------
-if (casilla.type === "jail") {
-  // Solo mostrar info: cárcel de visita
-  const info = document.createElement("div");
-  info.textContent = "Estás en la cárcel (visita).";
-  cont.appendChild(info);
-  callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
-  return;
-}
-
-if (casilla.type === "go_to_jail") {
-  miJug.enCarcel = true;
-  const js = getJugadoresLS();
-  const idx = js.findIndex(j => j.id === miJug.id);
-  if (idx >= 0) {
-    js[idx].enCarcel = true;
-    replaceJugadores(js);
+  // =================== LÓGICA MEJORADA DE CÁRCEL ===================
+  
+  if (casilla.type === "jail") {
+    const info = document.createElement("div");
+    info.style.padding = "8px";
+    info.textContent = "Estás en la cárcel (visita). No hay restricciones.";
+    cont.appendChild(info);
+    callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
+    return;
   }
-  const info = document.createElement("div");
-  info.textContent = "Has sido enviado a la cárcel. Debes pagar fianza o intentar sacar dobles.";
-  cont.appendChild(info);
-  callbacks.bloquearPasarTurno && callbacks.bloquearPasarTurno();
-  return;
-}
 
-  // Si el jugador ya está marcado en cárcel en su siguiente turno
+  if (casilla.type === "go_to_jail") {
+    miJug.enCarcel = true;
+    miJug.intentosCarcel = 0; // Reiniciar intentos
+    
+    const js = getJugadoresLS();
+    const idx = js.findIndex(j => j.id === miJug.id);
+    if (idx >= 0) {
+      js[idx].enCarcel = true;
+      js[idx].intentosCarcel = 0;
+      replaceJugadores(js);
+    }
+    
+    const info = document.createElement("div");
+    info.style.padding = "8px";
+    info.textContent = "¡Vas a la cárcel! En tu siguiente turno podrás intentar salir.";
+    cont.appendChild(info);
+    
+    // Marcar acción como resuelta para permitir pasar turno
+    marcarAccionResuelta(miJug);
+    callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
+    return;
+  }
+
+  // Si el jugador está EN LA CÁRCEL (en su turno)
   if (miJug.enCarcel) {
     callbacks.bloquearPasarTurno && callbacks.bloquearPasarTurno();
 
-    const pagarBtn = crearBtn("Pagar fianza $50", () => {
-      const res = ACC.intentarPagar(miJug.id, 50);
-      if (res.ok) {
+    // Inicializar intentos si no existe
+    if (typeof miJug.intentosCarcel !== 'number') {
+      miJug.intentosCarcel = 0;
+    }
+
+    const container = document.createElement("div");
+    container.style.padding = "8px";
+    container.style.border = "2px solid #ff6b6b";
+    container.style.borderRadius = "8px";
+    container.style.backgroundColor = "#ffebee";
+
+    // Título
+    const titulo = document.createElement("div");
+    titulo.style.fontWeight = "bold";
+    titulo.style.marginBottom = "8px";
+    titulo.style.color = "#c62828";
+    titulo.textContent = "🔒 EN LA CÁRCEL";
+    container.appendChild(titulo);
+
+    // Estado actual
+    const estado = document.createElement("div");
+    estado.style.marginBottom = "12px";
+    estado.style.fontSize = "13px";
+    
+    if (miJug.intentosCarcel === 0) {
+      estado.textContent = "Tienes 3 oportunidades para sacar dobles y salir, o puedes pagar la fianza.";
+    } else {
+      const restantes = 3 - miJug.intentosCarcel;
+      if (restantes > 0) {
+        estado.textContent = `Intento ${miJug.intentosCarcel} fallido. Te quedan ${restantes} oportunidad(es).`;
+      } else {
+        estado.textContent = "Has agotado los 3 intentos. Debes pagar la fianza.";
+      }
+    }
+    container.appendChild(estado);
+
+    // Opciones disponibles
+    const opciones = document.createElement("div");
+    opciones.style.display = "flex";
+    opciones.style.flexDirection = "column";
+    opciones.style.gap = "8px";
+
+    // Botón pagar fianza (siempre disponible)
+    const dineroDisponible = Number(miJug.dinero) || 0;
+    const puedePermitirse = dineroDisponible >= 50;
+    
+    const pagarBtn = crearBtn(`Pagar fianza $50 ${puedePermitirse ? '' : '(Sin dinero suficiente)'}`, () => {
+      if (dineroDisponible >= 50) {
+        miJug.dinero -= 50;
         miJug.enCarcel = false;
+        miJug.intentosCarcel = 0;
+        
+        // Actualizar localStorage
+        const js = getJugadoresLS();
+        const idx = js.findIndex(j => j.id === miJug.id);
+        if (idx >= 0) {
+          js[idx].dinero = miJug.dinero;
+          js[idx].enCarcel = false;
+          js[idx].intentosCarcel = 0;
+          replaceJugadores(js);
+        }
+        
         marcarAccionResuelta(miJug);
         callbacks.actualizarUI && callbacks.actualizarUI();
         callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
+        alert("Has pagado la fianza. ¡Eres libre! Puedes tirar dados normalmente.");
         cont.innerHTML = "";
-        alert("Has pagado la fianza, puedes salir de la cárcel.");
       } else {
-        alert("No tienes dinero suficiente para pagar la fianza.");
+        // Pagar con deuda
+        const faltante = 50 - dineroDisponible;
+        miJug.deudaBanco = (miJug.deudaBanco || 0) + faltante;
+        miJug.dinero = 0;
+        miJug.enCarcel = false;
+        miJug.intentosCarcel = 0;
+        
+        // Actualizar localStorage
+        const js = getJugadoresLS();
+        const idx = js.findIndex(j => j.id === miJug.id);
+        if (idx >= 0) {
+          js[idx].dinero = miJug.dinero;
+          js[idx].deudaBanco = miJug.deudaBanco;
+          js[idx].enCarcel = false;
+          js[idx].intentosCarcel = 0;
+          replaceJugadores(js);
+        }
+        
+        marcarAccionResuelta(miJug);
+        callbacks.actualizarUI && callbacks.actualizarUI();
+        callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
+        alert(`Has pagado la fianza (quedas en deuda por $${faltante}). ¡Eres libre!`);
+        cont.innerHTML = "";
       }
-    });
-    cont.appendChild(pagarBtn);
+    }, false); // Siempre habilitado, maneja la deuda internamente
 
-    const info = document.createElement("div");
-    info.style.marginTop = "8px";
-    info.textContent = "Si no pagas, solo podrás salir sacando dobles.";
-    cont.appendChild(info);
+    pagarBtn.style.backgroundColor = puedePermitirse ? "#4caf50" : "#ff9800";
+    pagarBtn.style.color = "white";
+    opciones.appendChild(pagarBtn);
 
+    // Información sobre tirar dados
+    if (miJug.intentosCarcel < 3) {
+      const infodados = document.createElement("div");
+      infoados.style.fontSize = "12px";
+      infodados.style.color = "#666";
+      infoados.style.fontStyle = "italic";
+      infoados.textContent = "O tira los dados para intentar sacar dobles y salir gratis.";
+      opciones.appendChild(infoados);
+    } else {
+      const avisoFinal = document.createElement("div");
+      avisoFinal.style.fontSize = "12px";
+      avisoFinal.style.color = "#d32f2f";
+      avisoFinal.style.fontWeight = "bold";
+      avisoFinal.textContent = "Ya no puedes intentar con dados. Debes pagar la fianza.";
+      opciones.appendChild(avisoFinal);
+    }
+
+    container.appendChild(opciones);
+    cont.appendChild(container);
     return;
   }
 

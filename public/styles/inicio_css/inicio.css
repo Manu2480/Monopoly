@@ -136,73 +136,138 @@ input:focus {
 .blue { background: blue; }
 
 /* ====== TABLA ====== */
-/* Contenedor más ancho para darle espacio a la tabla */
-.main-container {
-  width: 100%;
-  max-width: 980px; /* antes 700px: ahora más ancho */
-  margin: 0 auto;
-  text-align: center;
-}
-
-/* Tabla más grande y legible */
-/* Tabla principal con bordes bonitos */
-table {
-  width: 100%;
-  border-collapse: separate; /* Para que border-radius funcione */
-  border-spacing: 0;
-  font-size: 1rem;
-  border: 2px solid #007bff; /* borde principal azul */
-  border-radius: 10px; /* esquinas redondeadas */
-  overflow: hidden;
-}
-
-/* Encabezados */
-th {
-  background-color: #007bff;
-  color: white;
-  padding: 14px 12px;
-  text-align: center;
-  border-bottom: 2px solid #0056b3;
-}
-
-/* Celdas */
-td {
-  padding: 14px 12px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-  vertical-align: middle;
-}
-
-/* Última fila sin borde inferior */
-tbody tr:last-child td {
-  border-bottom: none;
-}
-
-/* Resaltar filas al pasar el cursor */
-tbody tr:hover {
-  background-color: #f0f8ff;
-}
-
-/* Tabla responsive */
-.table-responsive {
+/* Estilos para la tabla */
+.tabla-container {
   overflow-x: auto;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Colores dentro de la tabla */
-.table-theme td .color {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  border: 3px solid #ddd;
-  display: inline-block;
-}
-
-/* Opcional: añadir sombra sutil a la tabla */
 table {
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
 }
 
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
 
+th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Contenedor de país con bandera */
+.pais-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bandera-pais {
+  width: 24px;
+  height: 18px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* Ficha del jugador */
+.ficha-jugador {
+  font-size: 1.4rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* Color del jugador */
+.color-jugador {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: block;
+  border: 2px solid #ddd;
+}
+
+/* Botones de acción */
+.botones-accion {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-accion {
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.btn-accion:hover {
+  background: #f0f0f0;
+}
+
+.btn-accion.editar span {
+  color: #2ecc71;
+}
+
+.btn-accion.eliminar span {
+  color: #e74c3c;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  table {
+    font-size: 14px;
+  }
+  
+  th, td {
+    padding: 8px;
+  }
+  
+  td[data-label] {
+    display: flex;
+    padding: 8px;
+    border: none;
+  }
+  
+  td[data-label]::before {
+    content: attr(data-label);
+    font-weight: 600;
+    width: 120px;
+    min-width: 120px;
+  }
+  
+  .botones-accion {
+    justify-content: flex-end;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  thead {
+    display: none;
+  }
+  
+  tr {
+    display: block;
+    margin-bottom: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 8px;
+  }
+  
+  td[data-label] {
+    border-bottom: 1px solid #eee;
+  }
+  
+  td[data-label]:last-child {
+    border-bottom: none;
+  }
+}
 
 /* ====== BOTONES ====== */
 .btn {
@@ -298,4 +363,38 @@ select option {
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
+}
+/* ====== ICONOS DE FICHAS ====== */
+.ficha::before {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 1.6rem;
+  display: inline-block;
+  line-height: 60px; /* centra verticalmente */
+}
+
+/* Íconos individuales */
+.ficha-sombrero::before {
+  content: "\f8c0"; /* fa-hat-cowboy */
+}
+.ficha-elefante::before {
+  content: "\f6d7"; /* fa-hippo (no hay elefante, se usa hippo como alternativa) */
+}
+.ficha-barco::before {
+  content: "\e445"; /* fa-sailboat */
+}
+.ficha-avion::before {
+  content: "\f072"; /* fa-plane */
+}
+.ficha-guitarra::before {
+  content: "\f7a6"; /* fa-guitar */
+}
+.ficha-casa::before {
+  content: "\f015"; /* fa-house */
+}
+.titulo-ficha {
+  font-weight: bold;
+  margin-bottom: 15px; /* 🔹 separa el texto de los botones */
+  text-align: center;
+  font-size: 1.1rem;
 }

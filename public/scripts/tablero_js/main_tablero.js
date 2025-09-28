@@ -200,27 +200,40 @@ window.onload = async () => {
 
     // ⏭️ Cambiar turno
     document.getElementById("btn-turno").addEventListener("click", async () => {
-      if (!haMovido) {
-        alert("Debes mover antes de pasar turno.");
-        return;
+      const jugadorActual = jugadores[indiceTurno];
+      
+      // Si el jugador está en la cárcel, verificar si ya usó su turno
+      if (jugadorActual.enCarcel) {
+        // Si está en cárcel y no ha tirado dados (haMovido = false), debe tirar primero
+        if (!haMovido) {
+          alert("Estás en la cárcel. Debes tirar los dados o pagar la fianza antes de pasar turno.");
+          return;
+        }
+        // Si ya tiró dados en la cárcel (haMovido = true), puede pasar turno
+      } else {
+        // Para jugadores no encarcelados, deben haber tirado dados Y completado acciones
+        if (!haMovido) {
+          alert("Debes tirar los dados antes de pasar turno.");
+          return;
+        }
+        
+        // Verificar si tienen acciones pendientes sin resolver
+        const pos = typeof jugadorActual.posicionActual === "number" ? jugadorActual.posicionActual : 0;
+        const casillaActual = tableroData.casillas.find(c => c.id === pos) ?? tableroData.casillas[pos] ?? null;
+
+        if (tienePendientes(jugadorActual, casillaActual) && !jugadorActual.accionResuelta) {
+          alert("No puedes pasar el turno: primero resuelve la acción de esta casilla.");
+          return;
+        }
       }
 
-      const jugadorActual = jugadores[indiceTurno];
+      // Verificar deuda pendiente (aplica a todos)
       if ((jugadorActual?.deudaBanco || 0) > 0) {
         alert("Tienes deuda pendiente. Vende propiedades o hipoteca para cubrirla antes de pasar turno.");
         return;
       }
 
-      // ✅ Verificar si tiene pendientes
-      const pos = typeof jugadorActual.posicionActual === "number" ? jugadorActual.posicionActual : 0;
-      const casillaActual = tableroData.casillas.find(c => c.id === pos) ?? tableroData.casillas[pos] ?? null;
-
-      // 🔎 Solo bloquear si la casilla realmente requiere acción y no está resuelta
-      if (tienePendientes(jugadorActual, casillaActual) && !jugadorActual.accionResuelta) {
-        alert("⚠️ No puedes pasar el turno: primero resuelve la acción de esta casilla.");
-        return;
-      }
-
+      // Proceder con el cambio de turno
       cambiarTurno(
         jugadores,
         indiceTurno,
@@ -229,18 +242,12 @@ window.onload = async () => {
         v => (haMovido = v)
       );
 
-      // NO resetear accionResuelta del nuevo jugador aquí:
-      // (dejar que permanezca true si ya había pagado la casilla)
-
       renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
       renderizarBarraJugadores(jugadores);
       renderizarPerfilJugador(jugadores[indiceTurno], tableroData, actualizarUICompleta);
       resetPanelCarta();
       mostrarAccionesCasillaParaJugadorActual();
-
     });
-
-
 
     // 🔄 Redimensionar tablero
     window.addEventListener("resize", () => {

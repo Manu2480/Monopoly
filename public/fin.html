@@ -6,10 +6,12 @@
   <title>Fin del Juego</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles/fin_css/fin.css">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 </head>
 <body>
   <div id="monopoly-app" style="padding:20px;">
-    <h1 class="titulo">🏆 Fin Del Juego 🏆</h1>
+    <h1 class="titulo"><i class="bi bi-trophy-fill"></i> Fin Del Juego <i class="bi bi-trophy-fill"></i></h1>
 
     <!-- ======================
          CLASIFICACIÓN FINAL
@@ -42,9 +44,12 @@
         </div>
         <div class="propiedades">
           <p><strong>Propiedades</strong> <span class="total">(0 total)</span></p>
-          <p>🏡 Terrenos: <span class="terrenos">0</span> &nbsp;&nbsp; 🚂 Ferrocarriles: <span class="ferrocarriles">0</span></p>
-          <p>⚡ Servicios: <span class="servicios">0</span> &nbsp;&nbsp; 🏠 Casas: <span class="casas">0</span></p>
-          <p>🏢 Hoteles: <span class="hoteles">0</span></p>
+          <ul class="lista-propiedades">
+            <li><i class="bi bi-house-fill"></i> Terrenos: <span class="terrenos">0</span></li>
+            <li><i class="bi bi-train-front-fill icon-ferrocarril"></i> Ferrocarriles: <span class="ferrocarriles">0</span></li>
+            <li><i class="bi bi-house-door-fill"></i> Casas: <span class="casas">0</span></li>
+            <li><i class="bi bi-building"></i> Hoteles: <span class="hoteles">0</span></li>
+          </ul>
         </div>
         <div class="footer">
           <strong>Patrimonio Total:</strong> <span class="patrimonio">$0</span>
@@ -69,9 +74,12 @@
         </div>
         <div class="propiedades">
           <p><strong>Propiedades</strong> <span class="total">(0 total)</span></p>
-          <p>🏡 Terrenos: <span class="terrenos">0</span> &nbsp;&nbsp; 🚂 Ferrocarriles: <span class="ferrocarriles">0</span></p>
-          <p>⚡ Servicios: <span class="servicios">0</span> &nbsp;&nbsp; 🏠 Casas: <span class="casas">0</span></p>
-          <p>🏢 Hoteles: <span class="hoteles">0</span></p>
+          <ul class="lista-propiedades">
+            <li><i class="bi bi-house-fill"></i> Terrenos: <span class="terrenos">0</span></li>
+            <li><i class="bi bi-train-front-fill icon-ferrocarril"></i> Ferrocarriles: <span class="ferrocarriles">0</span></li>
+            <li><i class="bi bi-house-door-fill"></i> Casas: <span class="casas">0</span></li>
+            <li><i class="bi bi-building"></i> Hoteles: <span class="hoteles">0</span></li>
+          </ul>
         </div>
         <div class="footer">
           <strong>Patrimonio Total:</strong> <span class="patrimonio">$0</span>
@@ -96,9 +104,12 @@
         </div>
         <div class="propiedades">
           <p><strong>Propiedades</strong> <span class="total">(0 total)</span></p>
-          <p>🏡 Terrenos: <span class="terrenos">0</span> &nbsp;&nbsp; 🚂 Ferrocarriles: <span class="ferrocarriles">0</span></p>
-          <p>⚡ Servicios: <span class="servicios">0</span> &nbsp;&nbsp; 🏠 Casas: <span class="casas">0</span></p>
-          <p>🏢 Hoteles: <span class="hoteles">0</span></p>
+          <ul class="lista-propiedades">
+            <li><i class="bi bi-house-fill"></i> Terrenos: <span class="terrenos">0</span></li>
+            <li><i class="bi bi-train-front-fill icon-ferrocarril"></i> Ferrocarriles: <span class="ferrocarriles">0</span></li>
+            <li><i class="bi bi-house-door-fill"></i> Casas: <span class="casas">0</span></li>
+            <li><i class="bi bi-building"></i> Hoteles: <span class="hoteles">0</span></li>
+          </ul>
         </div>
         <div class="footer">
           <strong>Patrimonio Total:</strong> <span class="patrimonio">$0</span>
@@ -123,9 +134,12 @@
         </div>
         <div class="propiedades">
           <p><strong>Propiedades</strong> <span class="total">(0 total)</span></p>
-          <p>🏡 Terrenos: <span class="terrenos">0</span> &nbsp;&nbsp; 🚂 Ferrocarriles: <span class="ferrocarriles">0</span></p>
-          <p>⚡ Servicios: <span class="servicios">0</span> &nbsp;&nbsp; 🏠 Casas: <span class="casas">0</span></p>
-          <p>🏢 Hoteles: <span class="hoteles">0</span></p>
+          <ul class="lista-propiedades">
+            <li><i class="bi bi-house-fill"></i> Terrenos: <span class="terrenos">0</span></li>
+            <li><i class="bi bi-train-front-fill icon-ferrocarril"></i> Ferrocarriles: <span class="ferrocarriles">0</span></li>
+            <li><i class="bi bi-house-door-fill"></i> Casas: <span class="casas">0</span></li>
+            <li><i class="bi bi-building"></i> Hoteles: <span class="hoteles">0</span></li>
+          </ul>
         </div>
         <div class="footer">
           <strong>Patrimonio Total:</strong> <span class="patrimonio">$0</span>
@@ -139,9 +153,10 @@
        BOTONES DE CONTROL
        ====================== -->
   <div class="acciones">
-    <button class="btn-nuevo">🎮 Nuevo Juego</button>
+    <button class="btn-nuevo"><i class="bi bi-controller"></i> Nuevo Juego</button>
     <button class="btn-cerrar">Cerrar</button>
   </div>
+  <button class="btn-reset">Resetear datos</button>
 
   <!-- JS -->
   <script src="scripts/fin_js/fin.js"></script>
