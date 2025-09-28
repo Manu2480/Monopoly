@@ -201,6 +201,14 @@ window.onload = async () => {
     // ⏭️ Cambiar turno
     document.getElementById("btn-turno").addEventListener("click", async () => {
       const jugadorActual = jugadores[indiceTurno];
+
+      // DEBUG - añade estas líneas temporalmente
+      console.log("Estado actual:", {
+        haMovido: haMovido,
+        puedeTirar: puedeTirar,
+        enCarcel: jugadorActual.enCarcel,
+        accionResuelta: jugadorActual.accionResuelta
+      });
       
       // Si el jugador está en la cárcel, verificar si ya usó su turno
       if (jugadorActual.enCarcel) {
