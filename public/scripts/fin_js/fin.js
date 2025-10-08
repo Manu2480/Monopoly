@@ -1,6 +1,7 @@
 // =============================
 //   FIN DEL JUEGO - JS
 //   - Hipotecas no suman valor
+//   - Propiedades compradas sí cuentan como activos
 //   - Resetear datos en localStorage
 //   - Envío de resultados al backend (una sola vez)
 //   - Normalización de países desde ms-monopoly/database/countries.json
@@ -93,11 +94,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // -----------------------------
-  // Cargar board.json
+  // Cargar board.json y aplanarlo
   // -----------------------------
-  let board = [];
+  let allCells = [];
   const b = await fetchJsonSafe("/ms-monopoly/database/board.json");
-  if (b && b.length) board = b;
+  if (b && typeof b === "object") {
+    allCells = [
+      ...(b.bottom || []),
+      ...(b.left || []),
+      ...(b.top || []),
+      ...(b.right || []),
+    ];
+  }
 
   // -----------------------------
   // Calcular patrimonio
@@ -108,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let casas = 0, hoteles = 0;
 
     (j.propiedades || []).forEach(p => {
-      const propInfo = Array.isArray(board) ? board.find(b => b.id == p.idPropiedad) : null;
+      const propInfo = allCells.find(c => c.id == p.idPropiedad);
       const basePrice = propInfo ? (propInfo.price || 0) : 0;
 
       if (propInfo && propInfo.type === "property") terrenos++;
@@ -116,7 +124,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (propInfo && propInfo.type === "utility") servicios++;
 
       if (!p.hipotecado) {
+        // La propiedad vale su precio de compra
         valorPropiedades += basePrice;
+
+        // Sumar casas y hoteles
         valorPropiedades += (p.casas || 0) * 100;
         valorPropiedades += (p.hotel || 0) * 200;
       }
@@ -151,7 +162,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       `;
       contenedorClasificacion.appendChild(fila);
     });
-    // NO agregamos filas de relleno: solo mostramos los jugadores reales
   }
 
   // -----------------------------
@@ -161,7 +171,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (idx > 3) return; // límite 4 tarjetas en UI
     const card = tarjetas[idx];
     if (!card) return;
-    // mostramos la tarjeta (dejamos que las reglas CSS definan su display)
+    // mostramos la tarjeta
     card.style.display = "";
 
     if (card.querySelector(".pais")) card.querySelector(".pais").textContent = j.pais || "";
@@ -176,8 +186,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (card.querySelector(".hoteles")) card.querySelector(".hoteles").textContent = j.hoteles || 0;
     if (card.querySelector(".patrimonio")) card.querySelector(".patrimonio").textContent = `$${j.patrimonio || 0}`;
   });
-
-  // NOTA: no rellenamos tarjetas vacías con ceros; quedaron ocultas al inicio
 
   // -----------------------------
   // Guardar snapshot en localStorage
