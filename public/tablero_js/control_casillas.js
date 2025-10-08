@@ -6,9 +6,13 @@ import { obtenerCarta, voltearCartaEnPanel, resetPanelCarta } from "./cartas_tab
 
 /**
  * Estado global del mazo abierto: evita voltear múltiples cartas a la vez.
- * Ahora se reinicia automáticamente al cambiar de casilla/jugador.
+ * Ahora incluye información sobre qué jugador tiene carta abierta
  */
-let mazoAbierto = false;
+let estadoMazo = {
+  abierto: false,
+  jugadorId: null,
+  tipoCarta: null
+};
 
 /**
  * Marca y persiste que el jugador resolvió la acción de su casilla.
@@ -181,24 +185,57 @@ export function handlePlayerInJail(jugador, casilla, cont, callbacks) {
 
 /**
  * Manejador para cartas (chance / community_chest)
+ * ✅ CORREGIDO: Resetea estado correctamente por jugador
  */
 export function handleCards(jugador, casilla, cont, callbacks, tableroData) {
   const tipoMazo = casilla.type;
   
-  // Si ya hay una carta abierta para este jugador específico, no mostrar el botón
-  if (mazoAbierto && jugador.accionResuelta === false) {
+  console.log("🎴 handleCards llamado:", {
+    jugadorId: jugador.id,
+    jugadorNombre: jugador.nombre,
+    tipoMazo,
+    estadoMazoActual: estadoMazo,
+    accionResuelta: jugador.accionResuelta
+  });
+  
+  // ✅ Verificar si es un jugador diferente o una casilla diferente
+  const esDiferenteJugador = estadoMazo.jugadorId !== jugador.id;
+  const esDiferenteTipoCarta = estadoMazo.tipoCarta !== tipoMazo;
+  
+  // ✅ Si cambió el jugador o el tipo de carta, resetear estado
+  if (esDiferenteJugador || esDiferenteTipoCarta) {
+    console.log("🔄 Reseteando estado del mazo (jugador o tipo diferente)");
+    estadoMazo = {
+      abierto: false,
+      jugadorId: null,
+      tipoCarta: null
+    };
+    resetPanelCarta();
+  }
+  
+  // Si ya hay una carta abierta PARA ESTE JUGADOR y no está resuelta, no mostrar el botón
+  if (estadoMazo.abierto && estadoMazo.jugadorId === jugador.id && !jugador.accionResuelta) {
+    console.log("⏸️ Carta ya abierta para este jugador, esperando resolución");
     callbacks.bloquearPasarTurno && callbacks.bloquearPasarTurno();
     return; // La carta ya está visible, no agregar más botones
+  }
+  
+  // ✅ Si la acción ya fue resuelta, limpiar y permitir pasar turno
+  if (jugador.accionResuelta) {
+    console.log("✅ Acción de carta ya resuelta");
+    cont.innerHTML = "";
+    callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
+    return;
   }
   
   const voltearBtn = document.createElement("button");
   voltearBtn.className = "accion-btn";
   voltearBtn.textContent = "Voltear carta";
-  voltearBtn.disabled = mazoAbierto;
-  voltearBtn.title = mazoAbierto ? "Ya hay una carta abierta." : "";
+  voltearBtn.disabled = estadoMazo.abierto;
+  voltearBtn.title = estadoMazo.abierto ? "Ya hay una carta abierta." : "";
   
   voltearBtn.addEventListener("click", () => {
-    if (mazoAbierto) return;
+    if (estadoMazo.abierto) return;
     
     const carta = obtenerCarta(tipoMazo, tableroData);
     if (!carta) { 
@@ -209,7 +246,18 @@ export function handleCards(jugador, casilla, cont, callbacks, tableroData) {
       return; 
     }
 
-    mazoAbierto = true;
+    // ✅ Actualizar estado del mazo con información del jugador
+    estadoMazo = {
+      abierto: true,
+      jugadorId: jugador.id,
+      tipoCarta: tipoMazo
+    };
+    
+    console.log("🎴 Carta volteada:", {
+      estadoMazo,
+      carta: carta.description
+    });
+    
     callbacks.bloquearPasarTurno && callbacks.bloquearPasarTurno();
     voltearCartaEnPanel(carta);
     cont.innerHTML = ""; // Limpiar el botón voltear
@@ -276,14 +324,20 @@ export function handleCards(jugador, casilla, cont, callbacks, tableroData) {
   });
   
   cont.appendChild(voltearBtn);
-  if (mazoAbierto) callbacks.bloquearPasarTurno && callbacks.bloquearPasarTurno();
+  if (estadoMazo.abierto) callbacks.bloquearPasarTurno && callbacks.bloquearPasarTurno();
 }
 
 /**
  * Función helper para finalizar el manejo de cartas
+ * ✅ CORREGIDO: Resetea completamente el estado
  */
 function finalizarCarta(callbacks, cont) {
-  mazoAbierto = false;
+  console.log("🏁 Finalizando carta");
+  estadoMazo = {
+    abierto: false,
+    jugadorId: null,
+    tipoCarta: null
+  };
   cont.innerHTML = "";
   resetPanelCarta();
   callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
@@ -345,7 +399,16 @@ export function handleTax(jugador, casilla, cont, callbacks) {
   }
 }
 
-// Resetear estado del mazo cuando sea necesario
+/**
+ * Resetear estado del mazo cuando sea necesario
+ * ✅ CORREGIDO: Resetea completamente el estado
+ */
 export function resetMazoState() {
-  mazoAbierto = false;
+  console.log("🔄 resetMazoState llamado");
+  estadoMazo = {
+    abierto: false,
+    jugadorId: null,
+    tipoCarta: null
+  };
+  resetPanelCarta();
 }

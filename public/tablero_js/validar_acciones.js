@@ -3,17 +3,18 @@
 
 /**
  * Determina si el jugador tiene acciones pendientes sin resolver
+ * ✅ CORREGIDO: No considera pendiente si accionResuelta es true
  * @param {Object} jugador - El jugador actual
  * @param {Object} casilla - La casilla actual
  * @param {Array} jugadores - Array de todos los jugadores (necesario para buscar propietario)
  * @returns {boolean} True si tiene acciones pendientes
  */
 export function tienePendientes(jugador, casilla, jugadores = []) {
-  console.log("🔍 tienePendientes - jugador:", jugador?.nombre, "casilla:", casilla?.name, "tipo:", casilla?.type);
+  console.log("🔍 tienePendientes - jugador:", jugador?.nombre, "casilla:", casilla?.name, "tipo:", casilla?.type, "accionResuelta:", jugador?.accionResuelta);
   
-  if (!jugador || !casilla) return false;
-  if (jugador.accionResuelta) {
-    console.log("❌ accion ya resuelta");
+  // ✅ Si la acción ya fue resuelta, NO hay pendientes
+  if (jugador?.accionResuelta === true) {
+    console.log("✅ Acción ya resuelta - NO hay pendientes");
     return false;
   }
 

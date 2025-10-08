@@ -235,6 +235,14 @@ window.onload = async () => {
         await actualizarUICompleta();
 
         // 👀 actualizar casilla actual
+        //mostrarAccionesCasillaParaJugadorActual();
+
+        renderizarTablero(tableroData, jugadores, casillasVisibles, calcularRangoVisible);
+        renderizarBarraJugadores(jugadores);
+        renderizarPerfilJugador(jugadores[indiceTurno], tableroData, actualizarUICompleta);
+
+        setEstadoBotones("jugando");
+
         mostrarAccionesCasillaParaJugadorActual();
       }
 

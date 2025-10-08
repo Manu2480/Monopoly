@@ -1,10 +1,12 @@
 // jugadores_tablero.js
 import { getJugadoresLS, updateJugador, replaceJugadores } from "./jugadores_estado.js";
 import { clearAccionesCasilla, renderPanelCasilla } from "./ui_acciones.js";
+import { resetMazoState } from "./control_casillas.js";
 
 
 /**
  * moverJugador
+ * ✅ CORREGIDO: Ahora resetea el estado del mazo Y accionResuelta al moverse
  */
 export function moverJugador(idJugador, pasos, jugadores, tableroData, casillasVisibles, calcularRangoVisible) {
   if (!Array.isArray(jugadores) || !tableroData?.casillas) return null;
@@ -27,7 +29,15 @@ export function moverJugador(idJugador, pasos, jugadores, tableroData, casillasV
   }
 
   jugador.posicionActual = nuevaPos;
+  
+  // ✅ CORRECCIÓN CRÍTICA: Resetear accionResuelta cuando el jugador se mueve
+  // Esto permite que las nuevas casillas puedan mostrar sus acciones
+  jugador.accionResuelta = false;
+  
   jugadores[idxJugador] = jugador;
+
+  // ✅ CORRECCIÓN: Resetear estado del mazo cuando el jugador se mueve a una nueva casilla
+  resetMazoState();
 
   try {
     replaceJugadoresIfDifferent(jugadores);
@@ -40,6 +50,7 @@ export function moverJugador(idJugador, pasos, jugadores, tableroData, casillasV
 
 /**
  * cambiarTurno
+ * ✅ CORREGIDO: Ahora resetea el estado del mazo al cambiar de turno
  */
 export function cambiarTurno(jugadores, indiceActual, setIndiceCB, setPuedeTirarCB, setHaMovidoCB) {
   if (!Array.isArray(jugadores) || typeof indiceActual !== "number") return;
@@ -50,7 +61,7 @@ export function cambiarTurno(jugadores, indiceActual, setIndiceCB, setPuedeTirar
   if (jugadores[siguiente]) {
     jugadores[siguiente].turno = true;
     // NO reiniciamos jugadores[siguiente].accionResuelta aquí
-    // (la acción resuelta debe mantenerse hasta que el jugador se mueva)
+    // Se resetea cuando el jugador se mueve en moverJugador()
   }
 
   replaceJugadoresIfDifferent(jugadores);
@@ -59,6 +70,9 @@ export function cambiarTurno(jugadores, indiceActual, setIndiceCB, setPuedeTirar
   if (typeof setPuedeTirarCB === "function") setPuedeTirarCB(true);
   if (typeof setHaMovidoCB === "function") setHaMovidoCB(false);
 
+  // ✅ CORRECCIÓN: Resetear estado del mazo al cambiar de turno
+  resetMazoState();
+  
   // limpiar estado visual de la casilla
   clearAccionesCasilla();
   renderPanelCasilla(null);

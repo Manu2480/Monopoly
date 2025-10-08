@@ -166,10 +166,7 @@ export function renderizarPerfilJugador(jugador, tableroData = null, actualizarU
   perfilDiv.innerHTML = `
     <div style="display:flex; gap:12px; align-items:center; justify-content:space-between;">
       <div>
-        <h2 style="margin:0 0 6px 0; font-size:18px; display:flex; align-items:center; gap:8px;">
-          ${iconoHtml} ${jugador.nombre || "Jugador"}
-          <span style="display:inline-block;width:20px;height:20px;background:${jugador.color || '#1D1D1D'};border-radius:50%;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,0.2);" title="Color del jugador"></span>
-        </h2>
+        <h2 style="margin:0 0 6px 0; font-size:18px;">${iconoHtml} ${jugador.nombre || "Jugador"}</h2>
         <div style="font-size:13px;color:#444;">
           <span style="display:inline-block;margin-right:12px;"><strong>País:</strong> ${jugador.pais?.toUpperCase() || "??"} ${bandera}</span>
           <span style="display:inline-block;margin-right:12px;"><strong>Posición:</strong> Casilla #${jugador.posicionActual ?? 0}</span>
