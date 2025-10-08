@@ -1,4 +1,4 @@
-// casilla_handlers.js
+// control_casillas.js
 // Manejadores específicos para cada tipo de casilla del Monopoly
 import * as ACC from "./acciones_tablero.js";
 import { getJugadoresLS, replaceJugadores } from "./jugadores_estado.js";
@@ -6,7 +6,7 @@ import { obtenerCarta, voltearCartaEnPanel, resetPanelCarta } from "./cartas_tab
 
 /**
  * Estado global del mazo abierto: evita voltear múltiples cartas a la vez.
- * Ahora incluye información sobre qué jugador tiene carta abierta
+ * ✅ Ahora incluye información sobre qué jugador tiene carta abierta
  */
 let estadoMazo = {
   abierto: false,
@@ -401,7 +401,7 @@ export function handleTax(jugador, casilla, cont, callbacks) {
 
 /**
  * Resetear estado del mazo cuando sea necesario
- * ✅ CORREGIDO: Resetea completamente el estado
+ * ✅ CORREGIDO: Solo resetea el estado interno, NO el panel visual
  */
 export function resetMazoState() {
   console.log("🔄 resetMazoState llamado");
@@ -410,5 +410,6 @@ export function resetMazoState() {
     jugadorId: null,
     tipoCarta: null
   };
-  resetPanelCarta();
+  // ✅ NO llamamos a resetPanelCarta() aquí
+  // El panel se actualizará cuando se llame a renderPanelCasilla() con la nueva casilla
 }
