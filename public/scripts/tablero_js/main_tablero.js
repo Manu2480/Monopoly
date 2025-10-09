@@ -12,6 +12,7 @@ import { mostrarAccionesCasillaDOM, tienePendientes} from "./ui_acciones.js";
 import { renderizarPerfilJugador, resetPerfilJugador } from "./perfil_jugador_tablero.js";
 
 import {resetMazoState} from "./control_casillas.js";
+import { tramoConMayorPromedio, resetEstadisticas } from "./estadisticas_renta.js";
 
 // ======================== VARIABLES GLOBALES ========================
 let tableroData = { casillas: [], community_chest: [], chance: [] };
@@ -118,6 +119,25 @@ function finalizarJuego() {
     console.log("[main_tablero.js] Datos finales guardados para fin.html");
   } catch (e) {
     console.error("[main_tablero.js] Error guardando datos finales:", e);
+  }
+
+   // Antes de redirigir, calcular tramo con mayor promedio
+  try {
+    const totalCasillas = Array.isArray(tableroData.casillas) ? tableroData.casillas.length : 0;
+    const mejorTramo = tramoConMayorPromedio(totalCasillas, casillasVisibles);
+    if (mejorTramo) {
+      // Guardar también el mejor tramo para mostrarlo en fin.html
+      localStorage.setItem("mejor_tramo_promedio", JSON.stringify(mejorTramo));
+      console.log("[main_tablero.js] Mejor tramo promedio registrado:", mejorTramo);
+    } else {
+      localStorage.removeItem("mejor_tramo_promedio");
+      console.log("[main_tablero.js] No hubo pagos de renta registrados en la partida.");
+    }
+
+    // Reset opcional de estadísticas (si quieres que se reinicie al finalizar)
+    // resetEstadisticas();
+  } catch (e) {
+    console.error("[main_tablero.js] Error calculando mejor tramo:", e);
   }
 
   // Limpiar estado del juego

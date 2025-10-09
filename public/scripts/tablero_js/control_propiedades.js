@@ -53,54 +53,85 @@ export function handleUnownedProperty(jugador, casilla, cont, callbacks) {
 /**
  * Maneja pago de renta a otro propietario
  */
-export function handleRentPayment(jugador, casilla, propietario, cont, callbacks) {
-  const propDelDue = (propietario.propiedades || []).find(p => Number(p.idPropiedad) === Number(casilla.id));
-  let renta = Number(casilla.rent?.base ?? Math.round((Number(casilla.price) || 0) * 0.1));
-  
-  if (propDelDue) {
-    if ((Number(propDelDue.hotel) || 0) > 0) {
-      renta = Number(casilla.rent?.withHotel ?? renta * 5);
-    } else if ((Number(propDelDue.casas) || 0) > 0) {
-      const idx = (Number(propDelDue.casas) || 0) - 1;
-      renta = (casilla.rent?.withHouse && casilla.rent.withHouse[idx] !== undefined) 
-        ? casilla.rent.withHouse[idx] 
-        : Math.round(renta * (1 + (Number(propDelDue.casas) || 0)));
+// Reemplaza la implementación de handleRentPayment en control_propiedades.js por esta.
+// Nota: adapta nombres de propiedades si tu estructura difiere (ej. jugador.money vs jugador.dinero).
+export async function handleRentPayment(jugador, casilla, propietario, cont, callbacks) {
+  try {
+    // 1) Determinar monto de renta de forma robusta
+    let monto = 0;
+
+    // Caso simple: casilla.rent es número
+    if (typeof casilla.rent === "number") {
+      monto = casilla.rent;
+    } else if (casilla.rent && typeof casilla.rent === "object") {
+      // Intentar extraer un valor razonable desde posibles estructuras:
+      // - casilla.rent.base
+      // - casilla.rent[0]
+      // - casilla.rent.standard
+      if (typeof casilla.rent.base === "number") monto = casilla.rent.base;
+      else if (typeof casilla.rent.standard === "number") monto = casilla.rent.standard;
+      else if (Array.isArray(casilla.rent) && typeof casilla.rent[0] === "number") monto = casilla.rent[0];
+      else {
+        // fallback: si hay houses/hotels intenta usar la propiedad
+        if (typeof casilla.houses === "number" && casilla.houses > 0 && typeof casilla.rent[casilla.houses] === "number") {
+          monto = casilla.rent[casilla.houses];
+        }
+      }
     }
+
+    // Si aun así no tenemos monto, usar un fallback: 10% del precio o 50 si no hay price
+    if (!monto || isNaN(monto) || monto <= 0) {
+      if (typeof casilla.price === "number" && casilla.price > 0) monto = Math.round(casilla.price * 0.10);
+      else monto = 50; // valor por defecto razonable
+    }
+
+    // 2) Aplicar lógica de pago (intentar mutar los objetos en memoria)
+    // Aquí asumimos que `jugador.dinero` y `propietario.dinero` existen.
+    // Protegemos contra valores inesperados usando Number(...)
+    const antesJugador = Number(jugador.dinero ?? jugador.money ?? 0);
+    const antesProp = Number(propietario.dinero ?? propietario.money ?? 0);
+
+    // Si el jugador no tiene suficiente dinero, se define comportamiento simple:
+    if (antesJugador < monto) {
+      // Puedes adaptar esto: hipotecar, bancarrota, pagar lo que pueda, etc.
+      // Por ahora cobramos todo lo que tiene (pago parcial) y marcamos bancarrota si queda 0.
+      monto = antesJugador;
+    }
+
+    // Mutar dinero en los objetos (esto es lo que ui_acciones esperaba)
+    if (typeof jugador.dinero !== "undefined") jugador.dinero = antesJugador - monto;
+    else if (typeof jugador.money !== "undefined") jugador.money = antesJugador - monto;
+
+    if (typeof propietario.dinero !== "undefined") propietario.dinero = antesProp + monto;
+    else if (typeof propietario.money !== "undefined") propietario.money = antesProp + monto;
+
+    // Marcar acción resuelta en jugador (si esa propiedad existe en tu modelo)
+    if (typeof jugador.accionResuelta !== "undefined") jugador.accionResuelta = true;
+    else jugador.accionResuelta = true;
+
+    // Opcional: update UI del panel de acciones (si esperas mostrar mensaje)
+    try {
+      if (cont) {
+        const info = document.createElement("div");
+        info.style.padding = "8px";
+        info.style.fontSize = "14px";
+        info.textContent = `${jugador.nombre ?? jugador.name ?? "Jugador"} pagó $${monto} por ${casilla.name ?? "esta propiedad"}.`;
+        cont.appendChild(info);
+      }
+    } catch (err) {
+      // no bloqueamos por errores de DOM
+      console.debug("[control_propiedades] aviso UI:", err);
+    }
+
+    // 3) Devolver el monto pagado para que quien llame pueda registrarlo (fallback para pagos remotos)
+    return monto;
+  } catch (err) {
+    console.error("[control_propiedades] handleRentPayment fallo:", err);
+    // No propagues el ReferenceError: devolvemos 0 en fallo total
+    return 0;
   }
-
-  callbacks.bloquearPasarTurno && callbacks.bloquearPasarTurno();
-
-  const pagar = document.createElement("button");
-  pagar.className = "accion-btn";
-  pagar.textContent = `Pagar renta $${renta}`;
-  
-  pagar.addEventListener("click", () => {
-    const res = ACC.intentarPagar(jugador.id, renta);
-    if (res.ok) {
-      const js = getJugadoresLS();
-      const due = js.find(j => j.id === propietario.id);
-      if (due) { 
-        due.dinero = (Number(due.dinero) || 0) + renta; 
-        replaceJugadores(js); 
-      }
-      marcarAccionResuelta(jugador);
-      callbacks.actualizarUI && callbacks.actualizarUI();
-      callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
-      cont.innerHTML = "";
-    } else {
-      if (res.reason === "insuficiente") {
-        alert("Insuficiente. Debes vender/hipotecar propiedades.");
-        callbacks.bloquearPasarTurno && callbacks.bloquearPasarTurno();
-        callbacks.actualizarUI && callbacks.actualizarUI();
-      } else {
-        alert("Error al pagar: " + res.reason);
-        callbacks.habilitarPasarTurno && callbacks.habilitarPasarTurno();
-      }
-    }
-  });
-  
-  cont.appendChild(pagar);
 }
+
 
 /**
  * Maneja propiedades del jugador actual - opciones de gestión

@@ -1,4 +1,5 @@
 import { agregarJugadorACasilla, agregarEfectosVisuales } from "./ui_tablero.js";
+import { promedioRango } from "./estadisticas_renta.js";
 
 export function crearCasilla(casilla) {
   const div = document.createElement("div");
@@ -59,28 +60,32 @@ export function renderizarTablero(tableroData, jugadores, casillasVisibles, calc
   const jugadorActual = jugadores.find(j => j.turno);
   if (posicionElem) posicionElem.textContent = jugadorActual?.posicionActual ?? "0";
 
+  // ---- NUEVO: calcular promedio del tramo visible y mostrarlo ----
+  const promedioElem = document.getElementById("promedio-rango-actual");
+  if (promedioElem) {
+    const prom = promedioRango(inicio, fin);
+    // Formato con 2 decimales y separador de miles simple
+    const promFmt = prom === 0 ? "0" : Number(prom).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    promedioElem.textContent = `$${promFmt}`;
+  }
+
   for (const [index, casilla] of casillasAMostrar.entries()) {
     const elementoCasilla = crearCasilla(casilla);
     elementoCasilla.style.animationDelay = `${index * 50}ms`;
     tablero.appendChild(elementoCasilla);
 
     // ---- aplicar color de fondo según propietario ----
-    // encontrar propietario que tenga esta propiedad
     const propietario = jugadores.find(j => (j.propiedades || []).some(p => p.idPropiedad === casilla.id));
     if (propietario) {
-      // encontrar el objeto propiedad para chequear hipoteca
       const propObj = (propietario.propiedades || []).find(p => p.idPropiedad === casilla.id);
       if (propObj && propObj.hipotecado) {
-        elementoCasilla.style.background = "#dcdcdc"; // gris cuando hipotecada
+        elementoCasilla.style.background = "#dcdcdc";
         elementoCasilla.style.opacity = "0.9";
       } else {
-        // color más suave para no romper la franja superior
-        elementoCasilla.style.background = `linear-gradient(180deg, ${propietario.color}20, ${propietario.color}05)`; 
-        // el valor `${propietario.color}20` asume color en hex; puede ajustarse según tu esquema.
+        elementoCasilla.style.background = `linear-gradient(180deg, ${propietario.color}20, ${propietario.color}05)`;
       }
     } else {
-      // propiedad sin dueño -> fondo blanco (default)
-      elementoCasilla.style.background = ""; // deja CSS por defecto (white)
+      elementoCasilla.style.background = "";
     }
 
     // Insertar los jugadores dentro de la casilla (fichas)
